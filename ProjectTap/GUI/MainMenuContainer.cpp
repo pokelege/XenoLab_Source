@@ -11,6 +11,7 @@
 #include "Runtime/Engine/Public/AudioDevice.h"
 #include "Tiles/Ramp.h"
 #include "Tiles/EndTile.h"
+#include "LevelSaveManager.h"
 
 AMainMenuContainer::AMainMenuContainer()
 {
@@ -211,6 +212,11 @@ void AMainMenuContainer::ContinueGame()
 {
 	//currentMenuState = MenuState::CONTINUE;
 	//load last played level name
+	
+	// load in level save slot
+	ULevelSaveManager* LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::CreateSaveGameObject(ULevelSaveManager::StaticClass()));
+
+
 	StartNewGame();
 }
 

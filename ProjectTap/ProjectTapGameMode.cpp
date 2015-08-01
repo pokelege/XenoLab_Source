@@ -114,6 +114,23 @@ void AProjectTapGameMode::Respawn()
 bool AProjectTapGameMode::LoadNextLevel()
 {
 	if(loadingLevel) return false;
+
+	// saving level progress
+	FName level = GetGameState<AProjectTapGameState>()->currentLevelToLoadWhenWin;
+	FString levelStr = level.ToString();
+	FString* lStr = new FString;
+	FString* rStr = new FString;
+	levelStr.Split("-", lStr, rStr, ESearchCase::Type::IgnoreCase, ESearchDir::FromStart);
+
+	int32 episodeNum = FCString::Atoi(**lStr);
+	int32 levelNum = FCString::Atoi(**rStr);
+
+	ULevelSaveManager* LevelManager = Cast<ULevelSaveManager>(UGameplayStatics::CreateSaveGameObject(ULevelSaveManager::StaticClass()));
+	LevelManager->playerEpisode = episodeNum;
+	LevelManager->playerLevel = levelNum;
+	UGameplayStatics::SaveGameToSlot(LevelManager, "LEVEL_DATA", 0);
+
+	// load next level
 	UGameplayStatics::OpenLevel( GetWorld() , GetGameState<AProjectTapGameState>()->currentLevelToLoadWhenWin );
 	return loadingLevel = true;
 }
