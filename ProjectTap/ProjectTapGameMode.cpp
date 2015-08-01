@@ -114,6 +114,16 @@ void AProjectTapGameMode::Respawn()
 bool AProjectTapGameMode::LoadNextLevel()
 {
 	if(loadingLevel) return false;
+	
+	// load in previous data
+	ULevelSaveManager* LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::CreateSaveGameObject(ULevelSaveManager::StaticClass()));
+	LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::LoadGameFromSlot("LEVEL_DATA", 0));
+	int32 lastEpisode = LoadGameManager->playerEpisode;
+	int32 lastLevel = LoadGameManager->playerLevel;
+
+	FString lastLevelStr = FString::FromInt(lastEpisode) + "-" + FString::FromInt(lastLevel);
+	FName lastLevelName = FName(*lastLevelStr);
+	UGameplayStatics::OpenLevel(GetWorld(), lastLevelName);
 
 	// saving level progress
 	FName level = GetGameState<AProjectTapGameState>()->currentLevelToLoadWhenWin;
@@ -125,10 +135,14 @@ bool AProjectTapGameMode::LoadNextLevel()
 	int32 episodeNum = FCString::Atoi(**lStr);
 	int32 levelNum = FCString::Atoi(**rStr);
 
-	ULevelSaveManager* LevelManager = Cast<ULevelSaveManager>(UGameplayStatics::CreateSaveGameObject(ULevelSaveManager::StaticClass()));
-	LevelManager->playerEpisode = episodeNum;
-	LevelManager->playerLevel = levelNum;
-	UGameplayStatics::SaveGameToSlot(LevelManager, "LEVEL_DATA", 0);
+	// only saves if the next level is after the currently saved level
+	if (lastEpisode <= episodeNum && lastLevel <= levelNum)
+	{
+		ULevelSaveManager* SaveLevelManager = Cast<ULevelSaveManager>(UGameplayStatics::CreateSaveGameObject(ULevelSaveManager::StaticClass()));
+		SaveLevelManager->playerEpisode = episodeNum;
+		SaveLevelManager->playerLevel = levelNum;
+		UGameplayStatics::SaveGameToSlot(SaveLevelManager, "LEVEL_DATA", 0);
+	}
 
 	// load next level
 	UGameplayStatics::OpenLevel( GetWorld() , GetGameState<AProjectTapGameState>()->currentLevelToLoadWhenWin );
