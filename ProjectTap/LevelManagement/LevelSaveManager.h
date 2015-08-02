@@ -18,4 +18,13 @@ public:
 
 	// Sets default values for this actor's properties
 	ULevelSaveManager(const FObjectInitializer& ObjectInitializer);
+	UFUNCTION(BlueprintCallable, Category = "Save Data")
+	int32 GetLastEpisode();
+	UFUNCTION(BlueprintCallable, Category = "Save Data")
+	int32 GetLastLevel();
+
+	UFUNCTION(BlueprintCallable, Category = "Save Data")
+	int32 GetCurrentEpisode(FName buttonText);
+	UFUNCTION(BlueprintCallable, Category = "Save Data")
+	int32 GetCurrentLevel(FName buttonText);
 };
