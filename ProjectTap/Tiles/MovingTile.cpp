@@ -294,6 +294,10 @@ void AMovingTile::PostEditChangeProperty(FPropertyChangedEvent & PropertyChanged
 		{
 			GenerateActor();
 		}
+		else if (pName.Equals(TEXT("path")))
+		{
+			currentPathIndex = path.Num() > 0 ? path.Num() - 1 : 0;
+		}
 	}
 }
 
