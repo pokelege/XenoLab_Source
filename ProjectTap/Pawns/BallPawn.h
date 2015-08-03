@@ -60,6 +60,7 @@ private:
 	bool bInvincible = false;
 	bool bTransitioning = false;
 	bool bTransitionFinishNextFrame = false;
+	bool bCanGlow = false;
 
 public:
 	// Sets default values for this actor's properties
