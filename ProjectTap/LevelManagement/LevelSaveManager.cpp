@@ -41,8 +41,6 @@ int32 ULevelSaveManager::GetCurrentEpisode(FName buttonText)
 	FString episode = "";
 	FString buttonString = buttonText.ToString();
 
-	printonscreen(buttonString);
-
 	for (int32 i = 0; i < buttonString.Len(); i++)
 	{
 		FString temp = "";
