@@ -16,3 +16,4 @@ Makefile
 Build/
 *.opensdf
 .vs/
+*.gitconfig
