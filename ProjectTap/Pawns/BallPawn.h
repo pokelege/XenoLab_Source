@@ -96,6 +96,7 @@ public:
 
 	void setInvincibility(bool invincible);
 
+	UFUNCTION(BlueprintCallable, Category = "Ball")
 	void SetGlowForever(bool isGlowing);
 
 	UFUNCTION(BlueprintCallable, Category=ToggleMenu)

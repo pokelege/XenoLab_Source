@@ -12,12 +12,11 @@ public class ProjectTap : ModuleRules
                                                             "InputCore",
                                                             "AIModule", 
                                                             "UMG",
-                                                            "MovieSceneCore",
-                                                            #if WITH_EDITOR
-                                                            "UnrealEd"
-                                                            #endif
+                                                            "MovieSceneCore"
 															});
 
         PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
-	}
+		if (Target.Type == TargetRules.TargetType.Editor)
+			PublicDependencyModuleNames.Add("UnrealEd");
+    }
 }
