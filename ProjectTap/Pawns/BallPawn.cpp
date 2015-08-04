@@ -84,13 +84,17 @@ ABallPawn::ABallPawn()
 
 	ConstructorHelpers::FClassFinder<UUserWidget> pauseMenuClass( TEXT( "Class'/Game/GUI/Pause'" ) );
 	pauseMenuBlueprint = pauseMenuClass.Class;
-
 }
 
 // Called when the game starts or when spawned
 void ABallPawn::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (GConfig != nullptr)
+	{
+		GConfig->GetBool(TEXT("Ball"), TEXT("Glow"), bCanGlow, GGameIni);
+	}
 
 	ballCollision->AddImpulse( initialVelocity );
 
@@ -148,7 +152,7 @@ void ABallPawn::Tick( float DeltaTime )
 	{
 		rampTrigger->SetActorLocation( pos );
 	}
-	if ( heartBeatSequence != nullptr )
+	if ( bCanGlow && heartBeatSequence != nullptr )
 	{
 		material->SetScalarParameterValue( TEXT( "HeartBeat" ) , heartBeatSequence->GetFloatValue( currentHeartTime ) );
 		float min , max;
