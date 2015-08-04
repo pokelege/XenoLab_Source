@@ -19,6 +19,6 @@ ASmokeCharacter::ASmokeCharacter()
 	ConstructorHelpers::FObjectFinder<UParticleSystem> particleAsset(TEXT("/Game/Particles/P_Smoke_AI"));
 	smokeParticleSystem->SetTemplate(particleAsset.Object);
 
-	ConstructorHelpers::FObjectFinder<UBehaviorTree> behaviorAsset(TEXT("/Game/AI/SmokeBrain"));
-	behavior = behaviorAsset.Object;
+	//ConstructorHelpers::FObjectFinder<UBehaviorTree> behaviorAsset(TEXT("/Game/AI/SmokeBrain"));
+	//behavior = behaviorAsset.Object;
 }

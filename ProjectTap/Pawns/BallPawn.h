@@ -60,6 +60,7 @@ private:
 	bool bInvincible = false;
 	bool bTransitioning = false;
 	bool bTransitionFinishNextFrame = false;
+	bool bCanGlow = false;
 
 public:
 	// Sets default values for this actor's properties
@@ -94,6 +95,9 @@ public:
 	bool isDying();
 
 	void setInvincibility(bool invincible);
+
+	UFUNCTION(BlueprintCallable, Category = "Ball")
+	void SetGlowForever(bool isGlowing);
 
 	UFUNCTION(BlueprintCallable, Category=ToggleMenu)
 	void togglePauseMenu();

@@ -28,8 +28,8 @@ ASmokePawn::ASmokePawn()
 	movement->MaxSpeed = 100.0f;
 	movement->Acceleration = 100.0f;
 	movement->Deceleration = 0.0;
-	ConstructorHelpers::FObjectFinder<UBehaviorTree> behaviorAsset(TEXT("/Game/AI/SmokeBrain"));
-	behavior = behaviorAsset.Object;
+	//ConstructorHelpers::FObjectFinder<UBehaviorTree> behaviorAsset(TEXT("/Game/AI/SmokeBrain"));
+	//behavior = behaviorAsset.Object;
 }
 
 // Called when the game starts or when spawned
