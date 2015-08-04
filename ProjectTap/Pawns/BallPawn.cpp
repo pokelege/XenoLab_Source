@@ -366,6 +366,15 @@ void ABallPawn::setInvincibility( bool invincible )
 	bInvincible = invincible;
 }
 
+void ABallPawn::SetGlowForever(bool isGlowing)
+{
+	bCanGlow = isGlowing;
+	if (GConfig != nullptr)
+	{
+		GConfig->SetBool(TEXT("Ball"), TEXT("Glow"), bCanGlow, GGameIni);
+	}
+}
+
 void ABallPawn::setCamera( ABallPlayerStart* playerStart )
 {
 	if ( playerStart != nullptr )

@@ -96,6 +96,8 @@ public:
 
 	void setInvincibility(bool invincible);
 
+	void SetGlowForever(bool isGlowing);
+
 	UFUNCTION(BlueprintCallable, Category=ToggleMenu)
 	void togglePauseMenu();
 
