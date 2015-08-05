@@ -224,11 +224,11 @@ FVector ADeflectiveTile::clampShortAxis(const FVector& vec, bool resetValueToOne
 	}
 	else if (abs_longest - abs_y <= FLT_EPSILON)
 	{
-		newVec = FVector(0.0f, resetValueToOne ? (vec.X > .0f ? 1.0f : -1.0f) : vec.Y, 0.0f);
+		newVec = FVector(0.0f, resetValueToOne ? (vec.Y > .0f ? 1.0f : -1.0f) : vec.Y, 0.0f);
 	}
 	else
 	{
-		newVec = FVector(0.0f, 0.0f, resetValueToOne ? (vec.X > .0f ? 1.0f : -1.0f) : vec.Z);
+		newVec = FVector(0.0f, 0.0f, resetValueToOne ? (vec.Z > .0f ? 1.0f : -1.0f) : vec.Z);
 	}
 
 	return newVec;
@@ -241,7 +241,7 @@ void ADeflectiveTile::OnHit(class AActor* OtherActor,
 {
 	if (auto ball = Cast<ABallPawn>(OtherActor))
 	{
-		if (ballCanTouch)
+		if (ballCanTouch && !ball->isDying())
 		{
 			auto incomingSpeed = Cast<USphereComponent>(ball->RootComponent)->GetPhysicsLinearVelocity().Size();
 			auto incomingVector = clampShortAxis(GetActorLocation() - ball->GetActorLocation());
