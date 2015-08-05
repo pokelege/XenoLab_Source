@@ -15,6 +15,8 @@ class PROJECTTAP_API ABallPawn : public APawn
 	//transits to the center of a tile
 	FVector transitionNormal;
 	FVector lastAnchorPosition;		
+	float distanceTransitioned = .0f;
+	float totalTransitionDistance = .0f;
 
 	void SpawnCastingTrigger(BallCastType type);
 private:
