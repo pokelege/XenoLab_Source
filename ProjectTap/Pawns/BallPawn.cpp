@@ -187,6 +187,7 @@ void ABallPawn::Tick( float DeltaTime )
 	}
 
 	UpdateResetTransition( DeltaTime );
+	UpdateDeflectiveTransition(DeltaTime);
 
 	//update rigidbody wake up call
 	if (rampTrigger->isOverlaping)
@@ -204,7 +205,7 @@ void ABallPawn::Tick( float DeltaTime )
 
 }
 
-void ABallPawn::TransitionBallToProperLocation( const FVector& position , const FVector& newVelDir , float _transitionSpeed )
+void ABallPawn::TransitionBallToProperLocationFromRamp(const FVector& position, const FVector& newVelDir, float _transitionSpeed)
 {
 	lastAnchorPosition = FVector( position.X , position.Y , GetActorLocation().Z );
 
@@ -238,7 +239,6 @@ void ABallPawn::UpdateResetTransition( float dt )
 		auto vec = GetActorLocation() - lastAnchorPosition;
 		auto moveDelta = -transitionNormal * currentTransitionSpeed * dt;
 
-
 		auto dot = FVector::DotProduct( vec , transitionNormal );
 		auto reachedPos = dot <= 0.0f;
 
@@ -256,6 +256,44 @@ void ABallPawn::UpdateResetTransition( float dt )
 		}
 	}
 }
+
+
+void ABallPawn::TransitionBallToProperLocationFromDeflectiveTile(const FVector& toPos,
+	const FVector& fromPos,
+	const FVector& vel,
+	float transitionSpeed)
+{
+	lastAnchorPosition = fromPos;
+
+	totalTransitionDistance = (toPos - GetActorLocation()).Size();
+
+	transitionNormal = (toPos - GetActorLocation()).GetSafeNormal();
+
+	bDeflectiveTransition = true;
+
+}
+
+
+void ABallPawn::UpdateDeflectiveTransition(float dt)
+{
+	if (bDeflectiveTransition)
+	{
+		auto moveDelta = transitionNormal * currentTransitionSpeed * dt;
+		distanceTransitioned += moveDelta.Size();
+
+		if (distanceTransitioned <= totalTransitionDistance)
+		{
+			SetActorLocation(moveDelta + GetActorLocation());
+		}
+		else
+		{
+			bDeflectiveTransition = false;
+			distanceTransitioned = .0f;
+			totalTransitionDistance = .0f;
+		}
+	}
+}
+
 
 
 // Called to bind functionality to input
@@ -304,7 +342,7 @@ void ABallPawn::AddVelocity( const FVector& vel , bool clearForce )
 
 void ABallPawn::AddVelocity( const FVector& vel , const FVector& resetPos , bool clearForce )
 {
-	TransitionBallToProperLocation( resetPos , vel );
+	TransitionBallToProperLocationFromRamp( resetPos , vel );
 
 	auto originalVelocity = ballCollision->GetPhysicsLinearVelocity();
 	originalVelocity.Z = .0f;

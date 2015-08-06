@@ -15,8 +15,6 @@ class PROJECTTAP_API ABallPawn : public APawn
 	//transits to the center of a tile
 	FVector transitionNormal;
 	FVector lastAnchorPosition;		
-	float distanceTransitioned = .0f;
-	float totalTransitionDistance = .0f;
 
 	void SpawnCastingTrigger(BallCastType type);
 private:
@@ -56,6 +54,8 @@ private:
 	float currentHeartTime = 0;
 public:
 	float currentTransitionSpeed = 200.0f;
+	float distanceTransitioned = .0f;
+	float totalTransitionDistance = .0f;
 	const float DEFUALT_TRANSITION_SPEED = 200.0f;
 private:
 	bool dying = false;
@@ -63,6 +63,7 @@ private:
 	bool bTransitioning = false;
 	bool bTransitionFinishNextFrame = false;
 	bool bCanGlow = false;
+	bool bDeflectiveTransition = false;
 
 public:
 	// Sets default values for this actor's properties
@@ -76,15 +77,24 @@ public:
 
 	void UpdateResetTransition(float dt);
 
+	void UpdateDeflectiveTransition(float dt);
+
 	UFUNCTION(BlueprintCallable, Category = "Ball")
 	void AddVelocity(const FVector& vel, bool clearForce = true);
 	void AddVelocity(const FVector& vel, const FVector& resetPos, bool clearForce = true);
 
 	//reset ball to the center of the tile when hit
+	//*This function only works well with rampbase tiles
 	//@param transitionSpeed: as the name says, however, it will be reset to default speed after next transition is finished,
 	//it will not change the default speed
-	void TransitionBallToProperLocation(const FVector& resetPosition, const FVector& newVelDir,float transitionSpeed = 300.0f);
+	void TransitionBallToProperLocationFromRamp(const FVector& resetPosition, 
+												const FVector& newVelDir,
+												float transitionSpeed = 300.0f);
 
+	void TransitionBallToProperLocationFromDeflectiveTile(const FVector& toPos, 
+														  const FVector& fromPos, 
+														  const FVector& vel,
+														  float transitionSpeed = 300.0f);
 	void ResetBallXYPosition(const FVector& position);
 
 	// Called to bind functionality to input
