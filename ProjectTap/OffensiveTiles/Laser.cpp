@@ -106,16 +106,17 @@ void ALaser::checkLaserCollisions(float dt)
 {
 	FHitResult hit;
 	FCollisionQueryParams queryParam;
-	queryParam.bFindInitialOverlaps = false;
-	queryParam.bReturnFaceIndex = true;
+	//queryParam.bFindInitialOverlaps = false;
+	//queryParam.bReturnFaceIndex = true;
 	FCollisionObjectQueryParams objectParam = objectParam.DefaultObjectQueryParam;
 	if ( !canHitBall ) queryParam.AddIgnoredActor( GetWorld()->GetGameState<AProjectTapGameState>()->GetPlayer() );
 	auto pos = GetActorLocation();
-	auto rayStart = pos + dir * 5.0f;
+	auto rayStart = pos + dir * 10.0f;
 	auto laserVector = dir * length;
 	auto laserEmitter = laserParticle->EmitterInstances[0];
 	//ray cast to see if laser hits anything
 	GetWorld()->LineTraceSingleByObjectType(hit,rayStart, pos + laserVector, objectParam,queryParam);
+	laserEmitter->SetBeamSourcePoint(rayStart, 0);
 	auto hitActor = hit.Actor.Get();
 
 	if (hitActor != nullptr)
@@ -128,13 +129,13 @@ void ALaser::checkLaserCollisions(float dt)
 		if (ball != nullptr)
 		{
 			ball->Kill();
-			laserEmitter->SetBeamTargetPoint(hit.ImpactPoint, 0);
+			laserEmitter->SetBeamTargetPoint(currHitPoint, 0);
 			KillSubLaser();
 		}
 		else
 		{
 			//if not set laser end point
-			laserEmitter->SetBeamTargetPoint(hit.ImpactPoint, 0);
+			laserEmitter->SetBeamTargetPoint(currHitPoint, 0);
 
 			bool typeFound = false;
 			//if hits deflective tile then spawn a new laser object
@@ -177,8 +178,8 @@ void ALaser::checkLaserCollisions(float dt)
 					auto start = hit.ImpactPoint + newDir * 2.0f;
 					nextLaser->SetActorLocation(hit.ImpactPoint);
 					nextLaser->dir = newDir.IsNormalized() ? newDir : newDir.GetSafeNormal();
-					nextLaser->laserParticle->EmitterInstances[0]->SetBeamSourcePoint(hit.ImpactPoint, 0);
-					nextLaser->laserParticle->EmitterInstances[0]->SetBeamTargetPoint(start + newDir * length, 0);
+					//nextLaser->laserParticle->EmitterInstances[0]->SetBeamSourcePoint(hit.ImpactPoint, 0);
+					//nextLaser->laserParticle->EmitterInstances[0]->SetBeamTargetPoint(currHitPoint, 0);
 				}
 				else
 				{
@@ -234,7 +235,8 @@ void ALaser::checkLaserCollisions(float dt)
 	else
 	{
 		currHitPoint = laserVector;
-		laserEmitter->SetBeamTargetPoint(pos + currHitPoint, 0);
+		auto targetPoint = pos + currHitPoint;
+		laserEmitter->SetBeamTargetPoint(targetPoint, 0);
 		laserSparkParticle->SetWorldLocation( pos + currHitPoint );
 		laserSparkParticle->SetWorldRotation( FVector( (pos + currHitPoint) -
 			GetActorLocation() ).GetSafeNormal().Rotation().Quaternion() );

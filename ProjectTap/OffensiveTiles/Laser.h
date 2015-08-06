@@ -41,7 +41,7 @@ private:
 	float elapseTime = 1.0f / 30.0f;
 public:
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Laser )
-		float length = 1000000.0f;
+		float length = 99999.0f;
 private:
 	bool canHitBall = true;
 public:
