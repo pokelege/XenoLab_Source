@@ -28,7 +28,7 @@ ATurretPawn::ATurretPawn()
 	collisionBox->SetCollisionResponseToAllChannels( ECollisionResponse::ECR_Block );
 	collisionBox->SetCollisionObjectType( ECollisionChannel::ECC_WorldDynamic );
 	collisionBox->SetNotifyRigidBodyCollision( true );
-	UStaticMeshComponent* baseMesh = CreateDefaultSubobject<UStaticMeshComponent>( TEXT( "Turret base mesh" ) );
+	baseMesh = CreateDefaultSubobject<UStaticMeshComponent>( TEXT( "Turret base mesh" ) );
 	baseMesh->SetStaticMesh( baseMeshSource.Object );
 	baseMesh->AttachTo( collisionBox );
 	baseMesh->SetMobility( EComponentMobility::Static );
@@ -174,7 +174,7 @@ void ATurretPawn::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 	nozzleLocalUpdatable = TurretGunMesh->GetSocketLocation( "Nozzle" );
-	if ( !activated || died )
+	if ( died )
 	{
 		laserTag->EmitterInstances[0]->SetBeamSourcePoint( nozzleLocalUpdatable , 0 );
 		laserTag->EmitterInstances[0]->SetBeamTargetPoint( nozzleLocalUpdatable , 0 );
@@ -281,4 +281,18 @@ void ATurretPawn::Kill()
 	TurretGunMesh->SetStaticMesh( nullptr );
 	explosionSound->Activate();
 	explosionSound->Play();
+}
+
+OffsetInfo ATurretPawn::getOffsetInfo()
+{
+	OffsetInfo off;
+	off.scaleForCollision = FVector(0,0,0);
+	off.offsetForCollision = FVector(0,0,0);
+	off.offsetForCarryOn = FVector(0,0,50);
+	return off;
+}
+
+void ATurretPawn::SetCarriableMoblility(EComponentMobility::Type mobility)
+{
+	baseMesh->SetMobility(EComponentMobility::Movable);
 }

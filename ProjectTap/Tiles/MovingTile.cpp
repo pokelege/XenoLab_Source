@@ -174,12 +174,11 @@ void AMovingTile::UpdateCarryOn()
 			auto info = actor->getOffsetInfo();
 			auto newPos = GetActorLocation() + info.offsetForCarryOn;
 			carryOn->SetActorLocation(newPos);
-
 			if (auto laser = Cast<ALaser>(carryOn))
 			{
 				laser->SetLaserLocationWithDefaultHitLocation(newPos);
 			}
-
+			actor->SetCarriableMoblility(EComponentMobility::Movable);
 		}
 	}
 }

@@ -12,3 +12,8 @@ OffsetInfo ICarriable::getOffsetInfo()
 {
 	return OffsetInfo();
 }
+
+void ICarriable::SetCarriableMoblility(EComponentMobility::Type mobility)
+{
+
+}
