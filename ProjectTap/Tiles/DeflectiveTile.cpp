@@ -245,15 +245,15 @@ void ADeflectiveTile::OnHit(class AActor* OtherActor,
 		{
 			auto incomingSpeed = Cast<USphereComponent>(ball->RootComponent)->GetPhysicsLinearVelocity().Size();
 			auto incomingVector = clampShortAxis(GetActorLocation() - ball->GetActorLocation());
-			auto newDir = FMath::GetReflectionVector(incomingVector, NormalImpulse).GetSafeNormal();
+			auto newDir = FMath::GetReflectionVector(incomingVector, -Hit.ImpactNormal).GetSafeNormal();
 			auto newVel = (additionalDeflectingSpeed + incomingSpeed) * clampShortAxis(newDir);
 			ball->ballCollision->SetPhysicsAngularVelocity(FVector::ZeroVector);
 			ball->ballCollision->SetPhysicsLinearVelocity(newVel);
 
 			auto from = GetActorLocation();
-			auto to = from + newDir * 70.0f;
+			auto to = from + clampShortAxis(newDir) * 70.0f;
 
-			float transitionSpeed = type == DeflectiveTileType::HORIZONTAL ? 300.0f : .0f;
+			float transitionSpeed = type == DeflectiveTileType::HORIZONTAL ? 600.0f : .0f;
 			ball->TransitionBallToProperLocationFromDeflectiveTile(to, from, newVel, transitionSpeed);
 			HighlightEdgeForDuration(0.3f);
 			ballDeflectSound->Play();
