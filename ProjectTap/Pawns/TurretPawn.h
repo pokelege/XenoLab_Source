@@ -4,10 +4,11 @@
 
 #include "GameFramework/Pawn.h"
 #include "Tiles/IGroundable.h"
+#include "Tiles/ICarriable.h"
 #include "TurretPawn.generated.h"
 
 UCLASS()
-class PROJECTTAP_API ATurretPawn : public APawn, public IGroundable
+class PROJECTTAP_API ATurretPawn : public APawn, public IGroundable, public ICarriable
 {
 	GENERATED_BODY()
 
@@ -30,6 +31,7 @@ class PROJECTTAP_API ATurretPawn : public APawn, public IGroundable
 	UStaticMeshComponent* TurretGunMesh;
 	UParticleSystemComponent* laserTag;
 	UParticleSystemComponent* explosionParticle;
+	UStaticMeshComponent* baseMesh;
 public:
 
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Turret )
@@ -92,6 +94,9 @@ public:
 		void OnPlayerChanged( ABallPawn* newPlayer );
 
 	virtual const struct GroundableInfo* GetGroundableInfo() const override;
+
+	virtual OffsetInfo getOffsetInfo() override;
+	virtual void SetCarriableMoblility(EComponentMobility::Type mobility) override;
 private:
 	void UpdateLaserTag( float dt );
 	void UpdateTurretDamage( float dt );

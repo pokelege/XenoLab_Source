@@ -4,6 +4,7 @@
 
 #include "Runtime/Core/Public/Math/Vector.h"
 #include "Runtime/CoreUObject/Public/Interface.h"
+#include "Engine/EngineTypes.h"
 #include "ICarriable.generated.h"
 
 struct OffsetInfo
@@ -29,4 +30,5 @@ class ICarriable
 	GENERATED_IINTERFACE_BODY()
 public:
 	virtual OffsetInfo getOffsetInfo();
+	virtual void SetCarriableMoblility(EComponentMobility::Type mobility);
 };
