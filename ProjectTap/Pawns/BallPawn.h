@@ -91,6 +91,8 @@ public:
 												const FVector& newVelDir,
 												float transitionSpeed = 300.0f);
 
+	//due to physics engine problem, please set transitionSpeed less than zero 
+	//when deflective tile is vertical
 	void TransitionBallToProperLocationFromDeflectiveTile(const FVector& toPos, 
 														  const FVector& fromPos, 
 														  const FVector& vel,

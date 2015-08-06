@@ -252,7 +252,9 @@ void ADeflectiveTile::OnHit(class AActor* OtherActor,
 
 			auto from = GetActorLocation();
 			auto to = from + newDir * 70.0f;
-			ball->TransitionBallToProperLocationFromDeflectiveTile(from, to, newVel);
+
+			float transitionSpeed = type == DeflectiveTileType::HORIZONTAL ? 300.0f : .0f;
+			ball->TransitionBallToProperLocationFromDeflectiveTile(to, from, newVel, transitionSpeed);
 			HighlightEdgeForDuration(0.3f);
 			ballDeflectSound->Play();
 		}

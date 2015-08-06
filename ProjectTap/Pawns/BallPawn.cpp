@@ -265,11 +265,15 @@ void ABallPawn::TransitionBallToProperLocationFromDeflectiveTile(const FVector& 
 {
 	lastAnchorPosition = fromPos;
 
-	totalTransitionDistance = (toPos - GetActorLocation()).Size();
+	auto position = GetActorLocation();
 
-	transitionNormal = (toPos - GetActorLocation()).GetSafeNormal();
+	totalTransitionDistance = (toPos - position).Size();
+
+	transitionNormal = (toPos - position).GetSafeNormal();
 
 	bDeflectiveTransition = true;
+
+	currentTransitionSpeed = transitionSpeed;
 
 }
 
@@ -278,18 +282,29 @@ void ABallPawn::UpdateDeflectiveTransition(float dt)
 {
 	if (bDeflectiveTransition)
 	{
-		auto moveDelta = transitionNormal * currentTransitionSpeed * dt;
-		distanceTransitioned += moveDelta.Size();
-
-		if (distanceTransitioned <= totalTransitionDistance)
+		//if currentTransitionSpeed is less or equal than 0
+		// skip smooth transition
+		if (currentTransitionSpeed <= .0f)
 		{
-			SetActorLocation(moveDelta + GetActorLocation());
-		}
-		else
-		{
+			auto newPos = GetActorLocation() + transitionNormal * totalTransitionDistance;
+			//auto Z
+			SetActorLocation(newPos);
 			bDeflectiveTransition = false;
 			distanceTransitioned = .0f;
 			totalTransitionDistance = .0f;
+		}
+		else
+		{
+			auto moveDelta = transitionNormal * currentTransitionSpeed * dt;
+			distanceTransitioned += moveDelta.Size();
+			SetActorLocation(moveDelta + GetActorLocation());
+
+			if (distanceTransitioned > totalTransitionDistance)
+			{
+				bDeflectiveTransition = false;
+				distanceTransitioned = .0f;
+				totalTransitionDistance = .0f;
+			}
 		}
 	}
 }
