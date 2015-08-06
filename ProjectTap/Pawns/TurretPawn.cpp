@@ -174,7 +174,7 @@ void ATurretPawn::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 	nozzleLocalUpdatable = TurretGunMesh->GetSocketLocation( "Nozzle" );
-	if ( !activated || died )
+	if ( died )
 	{
 		laserTag->EmitterInstances[0]->SetBeamSourcePoint( nozzleLocalUpdatable , 0 );
 		laserTag->EmitterInstances[0]->SetBeamTargetPoint( nozzleLocalUpdatable , 0 );

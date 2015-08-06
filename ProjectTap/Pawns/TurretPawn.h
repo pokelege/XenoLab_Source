@@ -61,8 +61,6 @@ private:
 	bool died = false;
 	bool wasLocked = false;
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Turret)
-	bool activated = true;
 	// Sets default values for this pawn's properties
 	ATurretPawn();
 
