@@ -242,7 +242,7 @@ void APortalTile::ProcessBallEndfOverlap( AActor* actor )
 	{
 		auto ball = Cast<ABallPawn>( actor );
 		auto trigger = Cast<APawnCastingTrigger>( actor );
-		auto gameMode = Cast<AProjectTapGameMode>(GetWorld()->GetGameInstance());
+		auto gameMode = Cast<AProjectTapGameMode>(GetWorld()->GetAuthGameMode());
 
 		if (!gameMode->IsGodMode())
 		{

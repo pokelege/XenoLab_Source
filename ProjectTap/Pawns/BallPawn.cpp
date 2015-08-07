@@ -394,7 +394,7 @@ void ABallPawn::ResetBallXYPosition( const FVector& position )
 
 void ABallPawn::Kill()
 {
-	auto gameMode = Cast <AProjectTapGameMode>(GetWorld()->GetGameInstance());
+	auto gameMode = Cast <AProjectTapGameMode>(GetWorld()->GetAuthGameMode());
 	if (!gameMode->IsGodMode())
 	{
 		AProjectTapGameState* gameState = GetWorld()->GetGameState<AProjectTapGameState>();
