@@ -27,10 +27,13 @@ private:
 	CustomGameState lastReportedState = CustomGameState::GAME_STATE_UNKNOWN;
 	bool isMenu = false;
 	bool loadingLevel = false;
+	bool isGodMode = false;
 public:
 	AProjectTapGameMode ( const FObjectInitializer& initializer );
 	virtual void BeginPlay() override;
 	virtual void BeginDestroy() override;
+
+	bool IsGodMode();
 
 	void Respawn();
 	UFUNCTION()

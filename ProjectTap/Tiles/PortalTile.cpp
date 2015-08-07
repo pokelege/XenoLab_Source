@@ -6,6 +6,8 @@
 #include "Pawns/BallPawn.h"
 #include "Pawns/PawnCastingTrigger.h"
 #include "MagnetTile.h"
+#include "ProjectTapGameMode.h"
+
 const GroundableInfo APortalTile::groundableInfo = GroundableInfo( FVector( 0 , 0 , 40 ) , true );
 APortalTile::APortalTile()
 {
@@ -240,13 +242,18 @@ void APortalTile::ProcessBallEndfOverlap( AActor* actor )
 	{
 		auto ball = Cast<ABallPawn>( actor );
 		auto trigger = Cast<APawnCastingTrigger>( actor );
-		if ( ball != nullptr )
+		auto gameMode = Cast<AProjectTapGameMode>(GetWorld()->GetGameInstance());
+
+		if (!gameMode->IsGodMode())
 		{
-			ball->setInvincibility( false );
-		}
-		else if ( trigger != nullptr )
-		{
-			trigger->currentPawn->setInvincibility( false );
+			if (ball != nullptr)
+			{
+				ball->setInvincibility(false);
+			}
+			else if (trigger != nullptr)
+			{
+				trigger->currentPawn->setInvincibility(false);
+			}
 		}
 
 	}

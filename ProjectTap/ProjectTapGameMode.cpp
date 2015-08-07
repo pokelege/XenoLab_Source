@@ -57,6 +57,8 @@ void AProjectTapGameMode::StartPlay()
 				FRotator( playerTransform.GetRotation() ) ,
 				params );
 
+			isGodMode = realPlayerStart->godMode;
+
 			if ( ball != nullptr )
 			{
 				ball->AddVelocity( realPlayerStart->initialVelocity , realPlayerStart->GetActorLocation() );
@@ -84,6 +86,12 @@ void AProjectTapGameMode::StartPlay()
 	gameState->SetGameState( CustomGameState::GAME_STATE_PLAYING );
 	if ( isMenu ) gameState->SetGameMode( CustomGameMode::GAME_MODE_MAIN_MENU );
 }
+
+bool AProjectTapGameMode::IsGodMode()
+{
+	return isGodMode;
+}
+
 
 void AProjectTapGameMode::BeginDestroy()
 {

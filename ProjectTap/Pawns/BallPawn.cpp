@@ -13,6 +13,7 @@
 #include "General/ProjectTapCamera.h"
 #include "Tiles/DeflectiveTile.h"
 #include "Tiles/BlockingTileBase.h"
+#include "ProjectTapGameMode.h"
 
 // Sets default values
 ABallPawn::ABallPawn()
@@ -282,6 +283,7 @@ void ABallPawn::UpdateDeflectiveTransition(float dt)
 {
 	if (bDeflectiveTransition)
 	{
+		
 		//if currentTransitionSpeed is less or equal than 0
 		// skip smooth transition
 		if (currentTransitionSpeed <= .0f)
@@ -392,6 +394,8 @@ void ABallPawn::ResetBallXYPosition( const FVector& position )
 
 void ABallPawn::Kill()
 {
+	auto gameMode = Cast<AProjectTapGameMode>(GetWorld()->GetGameInstance());
+
 	AProjectTapGameState* gameState = GetWorld()->GetGameState<AProjectTapGameState>();
 	if ( gameState && !bInvincible && gameState->GetState() == CustomGameState::GAME_STATE_PLAYING && gameState->GetMode() != CustomGameMode::GAME_MODE_MAIN_MENU )
 	{
