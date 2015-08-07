@@ -309,8 +309,6 @@ void ABallPawn::UpdateDeflectiveTransition(float dt)
 	}
 }
 
-
-
 // Called to bind functionality to input
 void ABallPawn::SetupPlayerInputComponent( class UInputComponent* InputComponent )
 {
