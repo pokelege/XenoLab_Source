@@ -156,6 +156,33 @@ void UConstrainingSpringArmComponent::SetLockPosition(const FVector& lockPositio
 	this->lastLockPosition.Z = lockPosition.Z;
 }
 
+void UConstrainingSpringArmComponent::SetLockX(bool isXLock)
+{
+	lockX = isXLock;
+	if (GetAttachmentRootActor() != nullptr)
+	{
+		lastLockPosition.X = (PreviousDesiredLoc - TargetOffset).X;
+	}
+}
+
+void UConstrainingSpringArmComponent::SetLockY(bool isYLock)
+{
+	lockY = isYLock;
+	if (GetAttachmentRootActor() != nullptr)
+	{
+		lastLockPosition.Y = (PreviousDesiredLoc - TargetOffset).Y;
+	}
+}
+
+void UConstrainingSpringArmComponent::SetLockZ(bool isZLock)
+{
+	lockZ = isZLock;
+	if (GetAttachmentRootActor() != nullptr)
+	{
+		lastLockPosition.Z = (PreviousDesiredLoc - TargetOffset).Z;
+	}
+}
+
 void UConstrainingSpringArmComponent::SetTargetOffsetCustom( const FVector& newTargetOffset )
 {
 	TargetOffset = newTargetOffset;

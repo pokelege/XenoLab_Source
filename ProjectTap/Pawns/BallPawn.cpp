@@ -398,10 +398,9 @@ void ABallPawn::Kill()
 		gameState->SetGameState( CustomGameState::GAME_STATE_DYING );
 		dieSound->Play();
 		dying = true;
-		spring->lockX = true;
-		spring->lockY = true;
-		spring->lockZ = true;
-		spring->SetLockPosition( GetActorLocation() );
+		spring->SetLockX(true);
+		spring->SetLockY(true);
+		spring->SetLockZ(true);
 		//spring->SetTargetOffsetCustom( cameraComponent->RelativeLocation );
 	}
 }
@@ -430,9 +429,9 @@ void ABallPawn::setCamera( ABallPlayerStart* playerStart )
 {
 	if ( playerStart != nullptr )
 	{
-		spring->lockX = playerStart->lockX;
-		spring->lockY = playerStart->lockY;
-		spring->lockZ = playerStart->lockZ;
+		spring->SetLockX(playerStart->lockX);
+		spring->SetLockY(playerStart->lockY);
+		spring->SetLockZ(playerStart->lockZ);
 		cameraComponent->SetWorldRotation( playerStart->camera->GetActorRotation() );
 		cameraComponent->SetWorldLocation( playerStart->camera->GetActorLocation() );
 		cameraComponent->PostProcessSettings = Cast<UProjectTapCameraComponent>( playerStart->camera->GetComponentByClass( UProjectTapCameraComponent::StaticClass() ) )->PostProcessSettings;
