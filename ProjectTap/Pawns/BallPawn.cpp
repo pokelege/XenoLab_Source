@@ -394,18 +394,20 @@ void ABallPawn::ResetBallXYPosition( const FVector& position )
 
 void ABallPawn::Kill()
 {
-	auto gameMode = Cast<AProjectTapGameMode>(GetWorld()->GetGameInstance());
-
-	AProjectTapGameState* gameState = GetWorld()->GetGameState<AProjectTapGameState>();
-	if ( gameState && !bInvincible && gameState->GetState() == CustomGameState::GAME_STATE_PLAYING && gameState->GetMode() != CustomGameMode::GAME_MODE_MAIN_MENU )
+	auto gameMode = Cast <AProjectTapGameMode>(GetWorld()->GetGameInstance());
+	if (!gameMode->IsGodMode())
 	{
-		gameState->SetGameState( CustomGameState::GAME_STATE_DYING );
-		dieSound->Play();
-		dying = true;
-		spring->SetLockX(true);
-		spring->SetLockY(true);
-		spring->SetLockZ(true);
-		//spring->SetTargetOffsetCustom( cameraComponent->RelativeLocation );
+		AProjectTapGameState* gameState = GetWorld()->GetGameState<AProjectTapGameState>();
+		if (gameState && !bInvincible && gameState->GetState() == CustomGameState::GAME_STATE_PLAYING && gameState->GetMode() != CustomGameMode::GAME_MODE_MAIN_MENU)
+		{
+			gameState->SetGameState(CustomGameState::GAME_STATE_DYING);
+			dieSound->Play();
+			dying = true;
+			spring->SetLockX(true);
+			spring->SetLockY(true);
+			spring->SetLockZ(true);
+			//spring->SetTargetOffsetCustom( cameraComponent->RelativeLocation );
+		}
 	}
 }
 
