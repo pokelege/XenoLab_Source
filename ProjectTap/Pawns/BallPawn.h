@@ -30,6 +30,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Ball)
 	class UClass* pauseMenuBlueprint = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Ball)
+	bool bInvincible = false;
+
 	UCurveFloat* dieSequence;
 
 	UCurveFloat* heartBeatSequence;
@@ -54,7 +57,6 @@ public:
 	const float DEFUALT_TRANSITION_SPEED = 200.0f;
 private:
 	bool dying = false;
-	bool bInvincible = false;
 	bool bTransitioning = false;
 	bool bTransitionFinishNextFrame = false;
 	bool bCanGlow = false;

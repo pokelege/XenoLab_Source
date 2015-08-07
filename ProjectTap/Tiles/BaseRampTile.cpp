@@ -177,4 +177,6 @@ void ABaseRampTile::PostEditChangeProperty(FPropertyChangedEvent & PropertyChang
 
 	}
 }
+
+
 #endif
