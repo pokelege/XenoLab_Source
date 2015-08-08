@@ -47,7 +47,9 @@ ALaser::ALaser()
 	laserEmitSound = CreateDefaultSubobject<UAudioComponent>( TEXT( "Laser Emit Sound" ) );
 	laserEmitSound->SetSound( laserEmitSoundFile.Object );
 	laserEmitSound->AttachTo( GetRootComponent() );
+
 }
+
 
 const GroundableInfo* ALaser::GetGroundableInfo() const
 {

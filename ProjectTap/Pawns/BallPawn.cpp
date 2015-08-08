@@ -264,13 +264,17 @@ void ABallPawn::TransitionBallToProperLocationFromDeflectiveTile(const FVector& 
 	const FVector& vel,
 	float transitionSpeed)
 {
-	lastAnchorPosition = fromPos;
+	lastAnchorPosition = fromPos;	
 
 	auto position = GetActorLocation();
+	
+	auto transitionVec = toPos - position;
 
-	totalTransitionDistance = (toPos - position).Size();
+	auto transitionNormalVec = transitionVec - transitionVec.ProjectOnTo(vel);
 
-	transitionNormal = (toPos - position).GetSafeNormal();
+	totalTransitionDistance = transitionNormalVec.Size();
+
+	transitionNormal = transitionNormalVec.GetSafeNormal();
 
 	bDeflectiveTransition = true;
 
@@ -278,15 +282,13 @@ void ABallPawn::TransitionBallToProperLocationFromDeflectiveTile(const FVector& 
 
 }
 
-
 void ABallPawn::UpdateDeflectiveTransition(float dt)
 {
 	if (bDeflectiveTransition)
 	{
-		
 		//if currentTransitionSpeed is less or equal than 0
 		// skip smooth transition
-		if (currentTransitionSpeed <= .0f)
+		if (false)
 		{
 			auto newPos = GetActorLocation() + transitionNormal * totalTransitionDistance;
 			//auto Z
@@ -306,9 +308,34 @@ void ABallPawn::UpdateDeflectiveTransition(float dt)
 				bDeflectiveTransition = false;
 				distanceTransitioned = .0f;
 				totalTransitionDistance = .0f;
+				PositionBallOnAxis(lastAnchorPosition, transitionNormal);
 			}
 		}
 	}
+}
+
+void ABallPawn::PositionBallOnAxis(const FVector& position,
+								   const FVector& axis)
+{
+	auto pos = GetActorLocation();
+
+	auto clampedAxis = ADeflectiveTile::clampShortAxis(axis, true);
+	if (FMath::Abs(clampedAxis.X) >= 1.0f)
+	{
+		pos.X = position.X;
+	}
+
+	if (FMath::Abs(clampedAxis.Y) >= 1.0f)
+	{
+		pos.Y = position.Y;
+	}
+
+	if (FMath::Abs(clampedAxis.Z) >= 1.0f)
+	{
+		pos.Z = position.Z;
+	}
+
+	SetActorLocation(pos);
 }
 
 // Called to bind functionality to input
@@ -316,6 +343,7 @@ void ABallPawn::SetupPlayerInputComponent( class UInputComponent* InputComponent
 {
 	Super::SetupPlayerInputComponent( InputComponent );
 }
+
 
 void ABallPawn::togglePauseMenu()
 {
@@ -382,8 +410,7 @@ void ABallPawn::AddVelocity( const FVector& vel , const FVector& resetPos , bool
 
 	newVel.Z = vel.Z;
 	ballCollision->AddImpulse(newVel);
-}
-
+}  
 
 void ABallPawn::ResetBallXYPosition( const FVector& position )
 {
@@ -406,7 +433,6 @@ void ABallPawn::Kill()
 			spring->SetLockX(true);
 			spring->SetLockY(true);
 			spring->SetLockZ(true);
-			//spring->SetTargetOffsetCustom( cameraComponent->RelativeLocation );
 		}
 	}
 }
@@ -450,9 +476,9 @@ void ABallPawn::setCamera( ABallPlayerStart* playerStart )
 	}
 }
 
-void ABallPawn::OnHit( class AActor* OtherActor ,
-class UPrimitiveComponent* OtherComp ,
-	FVector NormalImpulse ,
+void ABallPawn::OnHit( class AActor* OtherActor,
+	class UPrimitiveComponent* OtherComp ,
+	FVector NormalImpulse,
 	const FHitResult& Hit )
 
 {

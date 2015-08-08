@@ -60,6 +60,10 @@ private:
 	bool bCanGlow = false;
 	bool bDeflectiveTransition = false;
 
+	//i.e if the axis is (0,0,1), position's Z value will be applied to ball's Z value
+	void PositionBallOnAxis(const FVector& position, 
+						    const FVector& axis);
+
 public:
 	// Sets default values for this actor's properties
 	ABallPawn();
@@ -73,6 +77,7 @@ public:
 	void UpdateResetTransition(float dt);
 
 	void UpdateDeflectiveTransition(float dt);
+
 
 	UFUNCTION(BlueprintCallable, Category = "Ball")
 		void AddVelocity(const FVector& vel, bool clearForce = true);
