@@ -66,6 +66,17 @@ public:
 	void SetLaserLocationWithDefaultDirection( const FVector& location );
 
 	virtual const struct GroundableInfo* GetGroundableInfo() const override;
+
+	virtual void PostSpawnInitialize
+		(
+		FVector const & SpawnLocation,
+		FRotator const & SpawnRotation,
+		AActor * InOwner,
+		APawn * InInstigator,
+		bool bRemoteOwned,
+		bool bNoFail,
+		bool bDeferConstruction
+		);
 private:
 	void checkLaserCollisions( float dt );
 

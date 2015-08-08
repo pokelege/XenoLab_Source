@@ -88,6 +88,22 @@ void ALaser::SetLaserDepth(unsigned i)
 	currentDepth = i;
 }
 
+void ALaser::PostSpawnInitialize
+(
+FVector const & SpawnLocation,
+FRotator const & SpawnRotation,
+AActor * InOwner,
+APawn * InInstigator,
+bool bRemoteOwned,
+bool bNoFail,
+bool bDeferConstruction
+)
+{
+	Super::PostSpawnInitialize(SpawnLocation, SpawnRotation, InOwner, InInstigator, bRemoteOwned, bNoFail, bDeferConstruction);
+	laserParticle->EmitterInstances[0]->SetBeamSourcePoint(GetActorLocation(), 0);
+	laserParticle->EmitterInstances[0]->SetBeamTargetPoint(GetActorLocation(), 0);
+}
+
 // Called every frame
 void ALaser::Tick( float DeltaTime )
 {
@@ -268,8 +284,8 @@ void ALaser::SpawnSubLaser(const FVector& start, const FVector& normal)
 	nextLaser->mesh->SetHiddenInGame(true);
 	nextLaser->dir = newDir;
 	nextLaser->length = length;
-	nextLaser->laserParticle->EmitterInstances[0]->SetBeamSourcePoint(start, 0);
-	nextLaser->laserParticle->EmitterInstances[0]->SetBeamTargetPoint(start + newDir * length, 0);
+	nextLaser->laserParticle->EmitterInstances[0]->SetBeamSourcePoint(nextLaser->GetActorLocation(), 0);
+	nextLaser->laserParticle->EmitterInstances[0]->SetBeamTargetPoint(nextLaser->GetActorLocation(), 0);
 }
 
 FVector ALaser::reflect(const FVector& v1, const FVector& v2)
