@@ -46,9 +46,9 @@ public:
 	
 	APortalTile();
 
+	virtual void PostLoad() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-
 	OffsetInfo getOffsetInfo() override;
 
 #if WITH_EDITOR
@@ -89,7 +89,7 @@ public:
 
 	virtual const struct GroundableInfo* GetGroundableInfo() const override;
 private:
-
+	void SetColor();
 	void TransportBallToOrange(class ABallPawn* pawn);
 	void TransportBallToBlue(ABallPawn* pawn);
 	

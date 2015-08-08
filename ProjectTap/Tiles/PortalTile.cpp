@@ -52,8 +52,10 @@ APortalTile::APortalTile()
 	teleportSound->SetSound( teleportSoundFile.Object );
 	teleportSound->bAutoActivate = false;
 	teleportSound->AttachTo( BoxCollision );
-}
 
+	if(material == nullptr) material = TileMesh == nullptr ? nullptr : TileMesh->CreateDynamicMaterialInstance(0);
+	SetColor();
+}
 const GroundableInfo* APortalTile::GetGroundableInfo() const
 {
 	return &APortalTile::groundableInfo;
@@ -129,14 +131,17 @@ void APortalTile::SetMeshCollisionProperty( UBoxComponent* box )
 
 }
 
+void APortalTile::PostLoad()
+{
+	Super::PostLoad();
+	SetColor();
+}
+
 void APortalTile::BeginPlay()
 {
 	Super::BeginPlay();
-	if ( material != nullptr )
-	{
-		material->SetVectorParameterValue( TEXT( "BaseColor" ) , ColorHelpers::GetColorFromEnum( color ) );
-		material->SetVectorParameterValue( TEXT( "BaseColorHighlighted" ) , ColorHelpers::GetColorFromEnum( color ) );
-	}
+	if (material == nullptr) material = TileMesh == nullptr ? nullptr : TileMesh->CreateDynamicMaterialInstance(0);
+	SetColor();
 }
 
 void APortalTile::Tick( float DeltaTime )
@@ -316,6 +321,15 @@ void APortalTile::GetMagnetPortalTransportedLocation( UPrimitiveComponent* hitPp
 	GetLaserPortalTransportedLocation( hitPportalTrigger , newDir , newPos );
 }
 
+void APortalTile::SetColor()
+{
+	if (material != nullptr)
+	{
+		material->SetVectorParameterValue(TEXT("BaseColor"), ColorHelpers::GetColorFromEnum(color));
+		material->SetVectorParameterValue(TEXT("BaseColorHighlighted"), ColorHelpers::GetColorFromEnum(color));
+	}
+}
+
 #if WITH_EDITOR
 void APortalTile::PostEditChangeProperty( FPropertyChangedEvent & PropertyChangedEvent )
 {
@@ -334,14 +348,17 @@ void APortalTile::PostEditChangeProperty( FPropertyChangedEvent & PropertyChange
 			{
 				otherPortal->otherPortal = this;
 				otherPortal->color = color;
+				otherPortal->SetColor();
 			}
 			
 		}
 		else if ( pName.Equals( "color" ) )
 		{
+			SetColor();
 			if ( otherPortal != nullptr )
 			{
 				otherPortal->color = color;
+				otherPortal->SetColor();
 			}
 		}
 	}
