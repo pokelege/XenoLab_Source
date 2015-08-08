@@ -90,7 +90,7 @@ bool ATile::IsEnabled()
 void ATile::BeginPlay()
 {
 	Super::BeginPlay();
-	material = TileMesh->CreateDynamicMaterialInstance( 0 );
+	material = TileMesh == nullptr ? nullptr : TileMesh->CreateDynamicMaterialInstance(0);
 	CancelHighlight();
 	UWorld* world = GetWorld();
 	AProjectTapGameState* gameState = world->GetGameState<AProjectTapGameState>();

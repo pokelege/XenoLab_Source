@@ -18,6 +18,7 @@ private:
 	static const GroundableInfo groundableInfo;
 protected:
 	FDelegateHandle OnGameStateChangedDelegateHandle;
+	UPROPERTY()
 	UMaterialInstanceDynamic* material = nullptr;
 	float lockFrameTimer = .0f;
 	float lockFPS = 1 / 60.0f;
