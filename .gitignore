@@ -17,3 +17,4 @@ Build/
 *.opensdf
 .vs/
 *.gitconfig
+*.orig

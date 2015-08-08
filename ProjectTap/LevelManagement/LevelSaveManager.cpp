@@ -41,18 +41,25 @@ int32 ULevelSaveManager::GetCurrentEpisode(FName buttonText)
 	FString episode = "";
 	FString buttonString = buttonText.ToString();
 
+	bool waitingBreak = false;
 	for (int32 i = 0; i < buttonString.Len(); i++)
 	{
 		FString temp = "";
 		temp += buttonString[i];
-		if (temp.IsNumeric())
+		if (temp.IsNumeric() && !temp.Equals("-"))
 		{
 			episode += buttonString[i];
+			waitingBreak = true;
+		}
+		if (temp.Equals("-") && waitingBreak)
+		{
+			break;
 		}
 	}
 	if (episode.Len() > 0)
 	{
-		return FCString::Atoi(*episode);
+		int32 ret = FCString::Atoi(*episode);
+		return ret;
 	}
 	return INT_MAX;
 }
@@ -61,18 +68,25 @@ int32 ULevelSaveManager::GetCurrentLevel(FName buttonText)
 {
 	FString level = "";
 	FString buttonString = buttonText.ToString();
+
+	bool afterBreak = false;
 	for (int32 i = 0; i < buttonString.Len(); i++)
 	{
 		FString temp = "";
 		temp += buttonString[i];
-		if (temp.IsNumeric())
+		if (temp.IsNumeric() && !temp.Equals("-") && afterBreak)
 		{
 			level += buttonString[i];
+		}
+		if (temp.Equals("-"))
+		{
+			afterBreak = true;
 		}
 	}
 	if (level.Len() > 0)
 	{
-		return FCString::Atoi(*level);
+		int32 ret = FCString::Atoi(*level);
+		return ret;
 	}
 	return INT_MAX;
 }
