@@ -8,64 +8,64 @@
 #include "General/Bullet.h"
 #include "ParticleEmitterInstances.h"
 
-const FName ATurretPawn::BASE_MESH = FName( "/Game/Models/TurretBase" );
-const FName ATurretPawn::GUN_MESH = FName( "/Game/Models/TurretGun" );
+const FName ATurretPawn::BASE_MESH = FName("/Game/Models/TurretBase");
+const FName ATurretPawn::GUN_MESH = FName("/Game/Models/TurretGun");
 const float ATurretPawn::MAX_HEALTH = 10.0f;
-const GroundableInfo ATurretPawn::groundableInfo = GroundableInfo(FVector(0,0,40), true);
+const GroundableInfo ATurretPawn::groundableInfo = GroundableInfo(FVector(0, 0, 40), true);
 // Sets default values
 ATurretPawn::ATurretPawn()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	ConstructorHelpers::FObjectFinder<UStaticMesh> baseMeshSource( *BASE_MESH.ToString() );
+	ConstructorHelpers::FObjectFinder<UStaticMesh> baseMeshSource(*BASE_MESH.ToString());
 
-	UBoxComponent* collisionBox = CreateDefaultSubobject<UBoxComponent>( TEXT( "Turret Collision" ) );
-	collisionBox->SetBoxExtent( FVector( 40 , 40 , 120 ) );
-	this->SetRootComponent( collisionBox );
-	collisionBox->SetCollisionEnabled( ECollisionEnabled::QueryAndPhysics );
+	UBoxComponent* collisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Turret Collision"));
+	collisionBox->SetBoxExtent(FVector(40, 40, 120));
+	this->SetRootComponent(collisionBox);
+	collisionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	collisionBox->bGenerateOverlapEvents = false;
-	collisionBox->SetCollisionResponseToAllChannels( ECollisionResponse::ECR_Block );
-	collisionBox->SetCollisionObjectType( ECollisionChannel::ECC_WorldDynamic );
-	collisionBox->SetNotifyRigidBodyCollision( true );
-	baseMesh = CreateDefaultSubobject<UStaticMeshComponent>( TEXT( "Turret base mesh" ) );
-	baseMesh->SetStaticMesh( baseMeshSource.Object );
-	baseMesh->AttachTo( collisionBox );
-	baseMesh->SetMobility( EComponentMobility::Static );
+	collisionBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	collisionBox->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	collisionBox->SetNotifyRigidBodyCollision(true);
+	baseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret base mesh"));
+	baseMesh->SetStaticMesh(baseMeshSource.Object);
+	baseMesh->AttachTo(collisionBox);
+	baseMesh->SetMobility(EComponentMobility::Static);
 
-	ConstructorHelpers::FObjectFinder<UStaticMesh> gunMesh( *GUN_MESH.ToString() );
-	TurretGunMesh = CreateDefaultSubobject<UStaticMeshComponent>( TEXT( "Turret gun mesh" ) );
-	TurretGunMesh->SetStaticMesh( gunMesh.Object );
-	TurretGunMesh->AttachTo( baseMesh );
+	ConstructorHelpers::FObjectFinder<UStaticMesh> gunMesh(*GUN_MESH.ToString());
+	TurretGunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret gun mesh"));
+	TurretGunMesh->SetStaticMesh(gunMesh.Object);
+	TurretGunMesh->AttachTo(baseMesh);
 	FTransform transform;
-	transform.SetLocation( FVector( 0 , 0 , 80 ) );
-	TurretGunMesh->SetRelativeTransform( transform );
+	transform.SetLocation(FVector(0, 0, 80));
+	TurretGunMesh->SetRelativeTransform(transform);
 
-	laserTag = CreateDefaultSubobject<UParticleSystemComponent>( TEXT( "Turret Laser Tag" ) );
-	ConstructorHelpers::FObjectFinder<UParticleSystem> laserParticle( TEXT( "/Game/Particles/P_TurretLaser" ) );
-	laserTag->SetTemplate( laserParticle.Object );
-	laserTag->AttachTo( baseMesh );
+	laserTag = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Turret Laser Tag"));
+	ConstructorHelpers::FObjectFinder<UParticleSystem> laserParticle(TEXT("/Game/Particles/P_TurretLaser"));
+	laserTag->SetTemplate(laserParticle.Object);
+	laserTag->AttachTo(baseMesh);
 
-	explosionParticle = CreateDefaultSubobject<UParticleSystemComponent>( TEXT( "Turret Explosion Tag" ) );
-	ConstructorHelpers::FObjectFinder<UParticleSystem> explosionParticleTemplate( TEXT( "/Game/Particles/P_Explosion" ) );
-	explosionParticle->SetTemplate( explosionParticleTemplate.Object );
-	explosionParticle->AttachTo( TurretGunMesh );
+	explosionParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Turret Explosion Tag"));
+	ConstructorHelpers::FObjectFinder<UParticleSystem> explosionParticleTemplate(TEXT("/Game/Particles/P_Explosion"));
+	explosionParticle->SetTemplate(explosionParticleTemplate.Object);
+	explosionParticle->AttachTo(TurretGunMesh);
 
-	ConstructorHelpers::FObjectFinder<USoundBase> explosionSoundFile( TEXT( "/Game/Sound/S_Explosion" ) );
-	explosionSound = CreateDefaultSubobject<UAudioComponent>( TEXT( "Explosion Sound" ) );
-	explosionSound->SetSound( explosionSoundFile.Object );
+	ConstructorHelpers::FObjectFinder<USoundBase> explosionSoundFile(TEXT("/Game/Sound/S_Explosion"));
+	explosionSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Explosion Sound"));
+	explosionSound->SetSound(explosionSoundFile.Object);
 	explosionSound->bAutoActivate = false;
-	explosionSound->AttachTo( explosionParticle );
+	explosionSound->AttachTo(explosionParticle);
 
-	ConstructorHelpers::FObjectFinder<USoundBase> fireSoundFile( TEXT( "/Game/Sound/S_Gunshot" ) );
+	ConstructorHelpers::FObjectFinder<USoundBase> fireSoundFile(TEXT("/Game/Sound/S_Gunshot"));
 	fireSound = fireSoundFile.Object;
-	ConstructorHelpers::FObjectFinder<USoundBase> beepSoundFile( TEXT( "/Game/Sound/S_Beep" ) );
+	ConstructorHelpers::FObjectFinder<USoundBase> beepSoundFile(TEXT("/Game/Sound/S_Beep"));
 	lockSound = beepSoundFile.Object;
 	ConstructorHelpers::FObjectFinder<USoundBase> beep2SoundFile(TEXT("/Game/Sound/S_UnBeep"));
 	unlockSound = beep2SoundFile.Object;
-	nozzleSound = CreateDefaultSubobject<UAudioComponent>( TEXT( "Nozzle Sound" ) );
+	nozzleSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Nozzle Sound"));
 	nozzleSound->bAutoActivate = false;
-	nozzleSound->AttachTo( TurretGunMesh );
+	nozzleSound->AttachTo(TurretGunMesh);
 }
 
 const GroundableInfo* ATurretPawn::GetGroundableInfo() const
@@ -79,18 +79,18 @@ void ATurretPawn::BeginPlay()
 	Super::BeginPlay();
 	UWorld* world = GetWorld();
 	AProjectTapGameState* gameState = world->GetGameState<AProjectTapGameState>();
-	OnPlayerChangedDelegateHandle = gameState->PlayerChanged.AddUFunction( this , TEXT( "OnPlayerChanged" ) );
+	OnPlayerChangedDelegateHandle = gameState->PlayerChanged.AddUFunction(this, TEXT("OnPlayerChanged"));
 
-	nozzleLocal = TurretGunMesh->GetSocketLocation( "Nozzle" );
-	nozzleLocalUpdatable = TurretGunMesh->GetSocketLocation( "Nozzle" );
-	laserTag->EmitterInstances[0]->SetBeamSourcePoint( nozzleLocal , 0 );
-	laserTag->SetVectorParameter( TEXT( "Color" ) , FVector( 0 , 2 , 0 ) );
-	nozzleSound->SetWorldLocation( nozzleLocal );
+	nozzleLocal = TurretGunMesh->GetSocketLocation("Nozzle");
+	nozzleLocalUpdatable = TurretGunMesh->GetSocketLocation("Nozzle");
+	laserTag->EmitterInstances[0]->SetBeamSourcePoint(nozzleLocal, 0);
+	laserTag->SetVectorParameter(TEXT("Color"), FVector(0, 2, 0));
+	nozzleSound->SetWorldLocation(nozzleLocal);
 	direction = this->GetActorForwardVector();
 	explosionParticle->Deactivate();
 }
 
-void ATurretPawn::OnPlayerChanged( ABallPawn* newPlayer )
+void ATurretPawn::OnPlayerChanged(ABallPawn* newPlayer)
 {
 	target = newPlayer;
 }
@@ -101,38 +101,38 @@ bool ATurretPawn::FoundPlayerToHit()
 
 	forward = TurretGunMesh->GetForwardVector();
 
-	if ( target == nullptr ) return false;
-	FVector turretToBallNormal = ( target->GetTransform().GetTranslation() - nozzleLocal ).GetSafeNormal();
-	float distance = FVector::DistSquared( target->GetActorLocation() , nozzleLocal );
+	if (target == nullptr) return false;
+	FVector turretToBallNormal = (target->GetTransform().GetTranslation() - nozzleLocal).GetSafeNormal();
+	float distance = FVector::DistSquared(target->GetActorLocation(), nozzleLocal);
 
-	float dot = FVector::DotProduct( turretToBallNormal , forward );
-	float radians = FMath::Cos( FMath::DegreesToRadians( FOV ) );
-	if ( dot < radians || distance > maxDistance * maxDistance ) return false;
+	float dot = FVector::DotProduct(turretToBallNormal, forward);
+	float radians = FMath::Cos(FMath::DegreesToRadians(FOV));
+	if (dot < radians || distance > maxDistance * maxDistance) return false;
 	FHitResult hit;
 	FCollisionQueryParams queryParam;
 	queryParam.bFindInitialOverlaps = false;
 	queryParam.bReturnFaceIndex = true;
 	FCollisionObjectQueryParams objectParam = objectParam.DefaultObjectQueryParam;
 
-	auto pos = TurretGunMesh->GetSocketLocation( "Nozzle" );
-	auto rayStart = pos + ( target->GetActorLocation() - nozzleLocalUpdatable ).GetSafeNormal();
-	auto laserVector = ( target->GetActorLocation() - nozzleLocalUpdatable ).GetSafeNormal() * maxDistance;
+	auto pos = TurretGunMesh->GetSocketLocation("Nozzle");
+	auto rayStart = pos + (target->GetActorLocation() - nozzleLocalUpdatable).GetSafeNormal();
+	auto laserVector = (target->GetActorLocation() - nozzleLocalUpdatable).GetSafeNormal() * maxDistance;
 
-	GetWorld()->LineTraceSingleByObjectType( hit , rayStart , pos + laserVector , objectParam , queryParam );
-	while ( hit.GetActor() != nullptr && Cast<ABullet>( hit.GetActor() ) != nullptr )
+	GetWorld()->LineTraceSingleByObjectType(hit, rayStart, pos + laserVector, objectParam, queryParam);
+	while (hit.GetActor() != nullptr && Cast<ABullet>(hit.GetActor()) != nullptr)
 	{
-		queryParam.AddIgnoredComponent( hit.GetComponent() );
+		queryParam.AddIgnoredComponent(hit.GetComponent());
 		hit = FHitResult();
-		GetWorld()->LineTraceSingleByObjectType( hit , rayStart , pos + laserVector , objectParam , queryParam );
+		GetWorld()->LineTraceSingleByObjectType(hit, rayStart, pos + laserVector, objectParam, queryParam);
 	}
-	return Cast<ABallPawn>( hit.GetActor() ) != nullptr && !Cast<ABallPawn>( hit.GetActor() )->isDying();
+	return Cast<ABallPawn>(hit.GetActor()) != nullptr && !Cast<ABallPawn>(hit.GetActor())->isDying();
 }
 
 void ATurretPawn::Fire()
 {
-	if ( target == nullptr ) return;
+	if (target == nullptr) return;
 
-	ABullet* bullet = this->GetWorld()->SpawnActor<ABullet>( target->GetActorLocation(), FRotator(0) );
+	ABullet* bullet = this->GetWorld()->SpawnActor<ABullet>(target->GetActorLocation(), FRotator(0));
 	target->Kill();
 	nozzleSound->Stop();
 	nozzleSound->SetSound(fireSound);
@@ -141,97 +141,97 @@ void ATurretPawn::Fire()
 
 bool ATurretPawn::CanRotateToPlayer()
 {
-	auto targetVector = ( target->GetActorLocation() - TurretGunMesh->GetComponentLocation() ).GetSafeNormal();
+	auto targetVector = (target->GetActorLocation() - TurretGunMesh->GetComponentLocation()).GetSafeNormal();
 	auto targetRotation = targetVector.Rotation();
 	return targetRotation.GetNormalized().Yaw <= GetActorRotation().GetNormalized().Yaw + rotation && targetRotation.GetNormalized().Yaw >= GetActorRotation().GetNormalized().Yaw - rotation;
 }
 
 bool ATurretPawn::RotateToPlayer(const float& DeltaTime)
 {
-	auto targetVector = ( target->GetActorLocation() - TurretGunMesh->GetComponentLocation() ).GetSafeNormal();
+	auto targetVector = (target->GetActorLocation() - TurretGunMesh->GetComponentLocation()).GetSafeNormal();
 	auto targetRotation = targetVector.Rotation();
-	TurretGunMesh->SetWorldRotation( FMath::RInterpTo( TurretGunMesh->GetComponentTransform().Rotator() , targetRotation , DeltaTime , ballSightedRotateSpeed ) );
-	auto dot = FVector::DotProduct( TurretGunMesh->GetForwardVector() , targetVector );
+	TurretGunMesh->SetWorldRotation(FMath::RInterpTo(TurretGunMesh->GetComponentTransform().Rotator(), targetRotation, DeltaTime, ballSightedRotateSpeed));
+	auto dot = FVector::DotProduct(TurretGunMesh->GetForwardVector(), targetVector);
 	return dot > 0 && 1.0f - dot < maxErrorToShoot;
 }
 
-bool ATurretPawn::LockPlayer( const float& DeltaTime )
+bool ATurretPawn::LockPlayer(const float& DeltaTime)
 {
-	if ( !wasLocked )
+	if (!wasLocked)
 	{
 		nozzleSound->Stop();
-		nozzleSound->SetSound( lockSound );
+		nozzleSound->SetSound(lockSound);
 		nozzleSound->Play();
-		laserTag->SetVectorParameter( TEXT( "Color" ) , FVector( 2 , 0 , 0 ) );
 		wasLocked = true;
 	}
-	currentFireDelayTime+= DeltaTime;
+	currentFireDelayTime += DeltaTime;
+	laserTag->SetVectorParameter(TEXT("Color"), FMath::Lerp(FVector(0, 2, 0), FVector(2, 0, 0), FMath::Clamp<float>(currentFireDelayTime / (fireDelay * 0.5f), 0, 1)));
 	return  currentFireDelayTime >= fireDelay;
 }
 
 // Called every frame
-void ATurretPawn::Tick( float DeltaTime )
+void ATurretPawn::Tick(float DeltaTime)
 {
-	Super::Tick( DeltaTime );
-	nozzleLocalUpdatable = TurretGunMesh->GetSocketLocation( "Nozzle" );
-	if ( died )
+	Super::Tick(DeltaTime);
+	nozzleLocalUpdatable = TurretGunMesh->GetSocketLocation("Nozzle");
+	if (died)
 	{
-		laserTag->EmitterInstances[0]->SetBeamSourcePoint( nozzleLocalUpdatable , 0 );
-		laserTag->EmitterInstances[0]->SetBeamTargetPoint( nozzleLocalUpdatable , 0 );
+		laserTag->EmitterInstances[0]->SetBeamSourcePoint(nozzleLocalUpdatable, 0);
+		laserTag->EmitterInstances[0]->SetBeamTargetPoint(nozzleLocalUpdatable, 0);
 		return;
 	}
-	laserTag->EmitterInstances[0]->SetBeamSourcePoint( nozzleLocalUpdatable , 0 );
-	nozzleSound->SetWorldLocation( nozzleLocalUpdatable );
+	laserTag->EmitterInstances[0]->SetBeamSourcePoint(nozzleLocalUpdatable, 0);
+	nozzleSound->SetWorldLocation(nozzleLocalUpdatable);
 
-	if ( FoundPlayerToHit() && CanRotateToPlayer() )
+	if (FoundPlayerToHit() && CanRotateToPlayer())
 	{
-		if ( RotateToPlayer(DeltaTime) )
+		if (RotateToPlayer(DeltaTime))
 		{
-			if ( LockPlayer( DeltaTime ) )
+			if (LockPlayer(DeltaTime))
 			{
 				Fire();
 			}
-				
+
 		}
 		else
 		{
-			if ( wasLocked )
+			if (wasLocked)
 			{
 				wasLocked = false;
 				nozzleSound->Stop();
 				nozzleSound->SetSound(unlockSound);
 				nozzleSound->Play();
 				currentFireDelayTime = 0;
-				laserTag->SetVectorParameter( TEXT( "Color" ) , FVector( 0 , 2 , 0 ) );
+				laserTag->SetVectorParameter(TEXT("Color"), FVector(0, 2, 0));
 			}
 		}
 	}
 	else
 	{
-		currentTime += ( DeltaTime * idleRotateSpeed );
-		regularRotation = FRotator( 0 , FMath::Sin( currentTime ) * ( rotation * 0.5f ) , 0 );
-		TurretGunMesh->SetRelativeRotation( FMath::RInterpTo( TurretGunMesh->GetRelativeTransform().Rotator() , regularRotation , DeltaTime , idleRotateSpeed ) );
-		nozzleLocalUpdatable = TurretGunMesh->GetSocketLocation( "Nozzle" );
-		if(wasLocked)
+		currentTime += (DeltaTime * idleRotateSpeed);
+		regularRotation = FRotator(0, FMath::Sin(currentTime) * (rotation * 0.5f), 0);
+		TurretGunMesh->SetRelativeRotation(FMath::RInterpTo(TurretGunMesh->GetRelativeTransform().Rotator(), regularRotation, DeltaTime, idleRotateSpeed));
+		nozzleLocalUpdatable = TurretGunMesh->GetSocketLocation("Nozzle");
+		if (wasLocked)
 		{
 			wasLocked = false;
 			nozzleSound->Stop();
 			nozzleSound->SetSound(unlockSound);
 			nozzleSound->Play();
 			currentFireDelayTime = 0;
-			laserTag->SetVectorParameter( TEXT( "Color" ) , FVector( 0 , 2 , 0 ) );
+			laserTag->SetVectorParameter(TEXT("Color"), FVector(0, 2, 0));
 		}
 	}
-	UpdateLaserTag( DeltaTime );
+	UpdateLaserTag(DeltaTime);
 }
 
 // Called to bind functionality to input
-void ATurretPawn::SetupPlayerInputComponent( class UInputComponent* InputComponent )
+void ATurretPawn::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
-	Super::SetupPlayerInputComponent( InputComponent );
+	Super::SetupPlayerInputComponent(InputComponent);
 }
 
-void ATurretPawn::UpdateLaserTag( float dt )
+void ATurretPawn::UpdateLaserTag(float dt)
 {
 	auto l = target->GetActorLocation();
 	direction = TurretGunMesh->GetForwardVector();
@@ -242,21 +242,21 @@ void ATurretPawn::UpdateLaserTag( float dt )
 	//change laser length
 	FHitResult hit;
 	auto end = nozzleLocalUpdatable + direction * maxDistance;
-	GetWorld()->LineTraceSingleByObjectType( hit , nozzleLocalUpdatable , end , objParams );
+	GetWorld()->LineTraceSingleByObjectType(hit, nozzleLocalUpdatable, end, objParams);
 
 	auto laserLength = maxDistance;
 
-	if ( hit.Actor != nullptr )
+	if (hit.Actor != nullptr)
 	{
-		laserLength = ( hit.Actor.Get()->GetActorLocation() - nozzleLocalUpdatable ).Size();
+		laserLength = (hit.Actor.Get()->GetActorLocation() - nozzleLocalUpdatable).Size();
 	}
-	laserTag->EmitterInstances[0]->SetBeamSourcePoint( nozzleLocalUpdatable , 0 );
-	laserTag->EmitterInstances[0]->SetBeamTargetPoint( nozzleLocalUpdatable + direction * laserLength , 0 );
+	laserTag->EmitterInstances[0]->SetBeamSourcePoint(nozzleLocalUpdatable, 0);
+	laserTag->EmitterInstances[0]->SetBeamTargetPoint(nozzleLocalUpdatable + direction * laserLength, 0);
 }
 
-void ATurretPawn::Damage( float deathDuration )
+void ATurretPawn::Damage(float deathDuration)
 {
-	if ( deathDuration == 0.0f )
+	if (deathDuration == 0.0f)
 	{
 		Kill();
 	}
@@ -265,7 +265,7 @@ void ATurretPawn::Damage( float deathDuration )
 		auto damage = MAX_HEALTH / deathDuration;
 		current_hp -= damage;
 
-		if ( current_hp < 0.0f )
+		if (current_hp < 0.0f)
 		{
 			Kill();
 		}
@@ -275,10 +275,10 @@ void ATurretPawn::Damage( float deathDuration )
 
 void ATurretPawn::Kill()
 {
-	if ( died )return;
+	if (died)return;
 	died = true;
-	explosionParticle->Activate( true );
-	TurretGunMesh->SetStaticMesh( nullptr );
+	explosionParticle->Activate(true);
+	TurretGunMesh->SetStaticMesh(nullptr);
 	explosionSound->Activate();
 	explosionSound->Play();
 }
@@ -286,9 +286,9 @@ void ATurretPawn::Kill()
 OffsetInfo ATurretPawn::getOffsetInfo()
 {
 	OffsetInfo off;
-	off.scaleForCollision = FVector(0,0,0);
-	off.offsetForCollision = FVector(0,0,0);
-	off.offsetForCarryOn = FVector(0,0,50);
+	off.scaleForCollision = FVector(0, 0, 0);
+	off.offsetForCollision = FVector(0, 0, 0);
+	off.offsetForCarryOn = FVector(0, 0, 50);
 	return off;
 }
 
