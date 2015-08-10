@@ -61,6 +61,7 @@ ADeflectiveTile::ADeflectiveTile()
 	ballDeflectSound->SetSound( ballDeflectSoundFile.Object );
 	ballDeflectSound->bAutoActivate = false;
 	ballDeflectSound->AttachTo( BoxCollision );
+	AdjustMeshOrientation();
 }
 
 const GroundableInfo* ADeflectiveTile::GetGroundableInfo() const
