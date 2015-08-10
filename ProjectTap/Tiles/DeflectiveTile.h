@@ -52,6 +52,7 @@ public:
 		DeflectiveTileType type;
 private:
 	bool ballCanTouch = true;
+	void AdjustMeshOrientation();
 public:
 
 	ADeflectiveTile();
@@ -65,7 +66,11 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void turnOffHighlight(bool offTile = true, bool offEdge = true) override;
-	virtual OffsetInfo getOffsetInfo() override;
+	virtual OffsetInfo getOffsetInfo() override;	
+
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent) override;
+#endif
 
 	//for a 3D vector, this function will find the axis with largest value
 	//and make the other two 0

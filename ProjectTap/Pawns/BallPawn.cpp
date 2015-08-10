@@ -262,7 +262,8 @@ void ABallPawn::UpdateResetTransition( float dt )
 void ABallPawn::TransitionBallToProperLocationFromDeflectiveTile(const FVector& toPos,
 	const FVector& fromPos,
 	const FVector& vel,
-	float transitionSpeed)
+	float transitionSpeed,
+	bool disableGravityWhenTransition)
 {
 	lastAnchorPosition = fromPos;	
 
@@ -280,36 +281,30 @@ void ABallPawn::TransitionBallToProperLocationFromDeflectiveTile(const FVector& 
 
 	currentTransitionSpeed = transitionSpeed;
 
+	bDisableGravityWhenTransition = disableGravityWhenTransition;
+
+	if (bDisableGravityWhenTransition)
+	{
+		ballCollision->SetEnableGravity(false);
+	}
 }
 
 void ABallPawn::UpdateDeflectiveTransition(float dt)
 {
 	if (bDeflectiveTransition)
 	{
-		//if currentTransitionSpeed is less or equal than 0
-		// skip smooth transition
-		if (false)
+		auto moveDelta = transitionNormal * currentTransitionSpeed * dt;
+		distanceTransitioned += moveDelta.Size();
+		SetActorLocation(moveDelta + GetActorLocation());
+
+		if (distanceTransitioned > totalTransitionDistance)
 		{
-			auto newPos = GetActorLocation() + transitionNormal * totalTransitionDistance;
-			//auto Z
-			SetActorLocation(newPos);
 			bDeflectiveTransition = false;
+			bDisableGravityWhenTransition = false;
+			ballCollision->SetEnableGravity(true);
 			distanceTransitioned = .0f;
 			totalTransitionDistance = .0f;
-		}
-		else
-		{
-			auto moveDelta = transitionNormal * currentTransitionSpeed * dt;
-			distanceTransitioned += moveDelta.Size();
-			SetActorLocation(moveDelta + GetActorLocation());
-
-			if (distanceTransitioned > totalTransitionDistance)
-			{
-				bDeflectiveTransition = false;
-				distanceTransitioned = .0f;
-				totalTransitionDistance = .0f;
-				PositionBallOnAxis(lastAnchorPosition, transitionNormal);
-			}
+			PositionBallOnAxis(lastAnchorPosition, transitionNormal);
 		}
 	}
 }

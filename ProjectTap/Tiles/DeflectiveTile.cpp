@@ -79,20 +79,7 @@ void ADeflectiveTile::BeginPlay()
 
 	glowColorHighlighted *= glowColor;
 	baseColorHighlighted *= baseColor;
-	switch (type)
-	{
-		case DeflectiveTileType::HORIZONTAL:
-			SetActorRotation(FRotator(0.0f, currentRotation, 0.0f));
-			break;
-		case DeflectiveTileType::VERTICAL_NORMAL_X:
-			SetActorRotation(FRotator(currentRotation, 0.0f, rotationDegreeLimit));
-			break;
-		case DeflectiveTileType::VERTICAL_NORMAL_Y:
-			SetActorRotation(FRotator(currentRotation, rotationDegreeLimit, rotationDegreeLimit));
-			break;
-		default:
-			break;
-	}
+	AdjustMeshOrientation();
 }
 
 OffsetInfo ADeflectiveTile::getOffsetInfo()
@@ -142,6 +129,23 @@ void ADeflectiveTile::UpdateEdgeHighlight(float dt)
 	}
 }
 
+void ADeflectiveTile::AdjustMeshOrientation()
+{
+	switch (type)
+	{
+	case DeflectiveTileType::HORIZONTAL:
+		SetActorRotation(FRotator(0.0f, currentRotation, 0.0f));
+		break;
+	case DeflectiveTileType::VERTICAL_NORMAL_X:
+		SetActorRotation(FRotator(currentRotation, 0.0f, rotationDegreeLimit));
+		break;
+	case DeflectiveTileType::VERTICAL_NORMAL_Y:
+		SetActorRotation(FRotator(currentRotation, rotationDegreeLimit, rotationDegreeLimit));
+		break;
+	default:
+		break;
+	}
+}
 
 void ADeflectiveTile::Spin(float dt)
 {
@@ -207,6 +211,26 @@ void ADeflectiveTile::HighlightEdgeForDuration(float duration)
 	edgeHighlightDuration = duration;
 }
 
+#if WITH_EDITOR
+void ADeflectiveTile::PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	if (PropertyChangedEvent.Property != nullptr)
+	{
+		auto p = PropertyChangedEvent.Property;
+		auto pName = p->GetName();
+
+		//when currentEditorPathIndex property changes in editor
+		//reset current moving tile's location to desinated node's location
+		if (pName.Equals(TEXT("type")))
+		{
+			AdjustMeshOrientation();
+			transitionDistance = type == DeflectiveTileType::HORIZONTAL ? 70.0f : 130.0f;
+		}
+	}
+}
+#endif
 
 FVector ADeflectiveTile::clampShortAxis(const FVector& vec, bool resetValueToOne)
 {
@@ -254,7 +278,8 @@ void ADeflectiveTile::OnHit(class AActor* OtherActor,
 			auto to = from + clampShortAxis(newDir) * transitionDistance;
 
 			float transitionSpeed = type == DeflectiveTileType::HORIZONTAL ? 300.0f : 800.0f;
-			ball->TransitionBallToProperLocationFromDeflectiveTile(to, from, newVel, transitionSpeed);
+			bool disableTransitionGravity = type != DeflectiveTileType::HORIZONTAL;
+			ball->TransitionBallToProperLocationFromDeflectiveTile(to, from, newVel, transitionSpeed, disableTransitionGravity);
 			HighlightEdgeForDuration(0.3f);
 			ballDeflectSound->Play();
 		}

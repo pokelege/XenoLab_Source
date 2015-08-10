@@ -13,8 +13,9 @@ class PROJECTTAP_API ABallPawn : public APawn
 
 		//these two vectors are used when the ball
 		//transits to the center of a tile
-		FVector transitionNormal;
+	FVector transitionNormal;
 	FVector lastAnchorPosition;
+
 
 	void SpawnCastingTrigger(BallCastType type);
 private:
@@ -59,7 +60,7 @@ private:
 	bool bTransitionFinishNextFrame = false;
 	bool bCanGlow = false;
 	bool bDeflectiveTransition = false;
-
+	bool bDisableGravityWhenTransition = false;
 	//i.e if the axis is (0,0,1), position's Z value will be applied to ball's Z value
 	void PositionBallOnAxis(const FVector& position, 
 						    const FVector& axis);
@@ -96,7 +97,8 @@ public:
 	void TransitionBallToProperLocationFromDeflectiveTile(const FVector& toPos,
 		const FVector& fromPos,
 		const FVector& vel,
-		float transitionSpeed = 300.0f);
+		float transitionSpeed = 300.0f,
+		bool disableGravityWhenTransition = false);
 	void ResetBallXYPosition(const FVector& position);
 
 	// Called to bind functionality to input
