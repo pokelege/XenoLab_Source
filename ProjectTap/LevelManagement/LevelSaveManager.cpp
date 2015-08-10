@@ -90,3 +90,11 @@ int32 ULevelSaveManager::GetCurrentLevel(FName buttonText)
 	}
 	return INT_MAX;
 }
+
+int32 ULevelSaveManager::GetCurrentEpisodeEpButton(FName buttonText)
+{
+	FString level = "";
+	FString buttonString = buttonText.ToString();
+
+	return INT_MAX;
+}
