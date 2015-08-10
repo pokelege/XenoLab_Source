@@ -251,7 +251,7 @@ void ADeflectiveTile::OnHit(class AActor* OtherActor,
 			ball->ballCollision->SetPhysicsLinearVelocity(newVel);
 
 			auto from = GetActorLocation();
-			auto to = from + clampShortAxis(newDir) * 70.0f;
+			auto to = from + clampShortAxis(newDir) * transitionDistance;
 
 			float transitionSpeed = type == DeflectiveTileType::HORIZONTAL ? 300.0f : 800.0f;
 			ball->TransitionBallToProperLocationFromDeflectiveTile(to, from, newVel, transitionSpeed);

@@ -45,6 +45,9 @@ public:
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Tile )
 		float currentRotation = 45;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tile)
+		float transitionDistance = 80.0f;
+
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Tile )
 		DeflectiveTileType type;
 private:
