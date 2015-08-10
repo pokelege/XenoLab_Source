@@ -229,6 +229,10 @@ void ADeflectiveTile::PostEditChangeProperty(FPropertyChangedEvent & PropertyCha
 			AdjustMeshOrientation();
 			transitionDistance = type == DeflectiveTileType::HORIZONTAL ? 70.0f : 130.0f;
 		}
+		else if(pName.Equals(TEXT("currentRotation")))
+		{
+			AdjustMeshOrientation();
+		}
 	}
 }
 #endif
