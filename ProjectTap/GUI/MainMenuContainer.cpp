@@ -11,6 +11,7 @@
 #include "Runtime/Engine/Public/AudioDevice.h"
 #include "Tiles/Ramp.h"
 #include "Tiles/EndTile.h"
+#include "LevelManagement/LevelSaveManager.h"
 
 AMainMenuContainer::AMainMenuContainer()
 {
@@ -211,7 +212,16 @@ void AMainMenuContainer::ContinueGame()
 {
 	//currentMenuState = MenuState::CONTINUE;
 	//load last played level name
-	StartNewGame();
+	
+	// load in level save slot
+	ULevelSaveManager* LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::CreateSaveGameObject(ULevelSaveManager::StaticClass()));
+	LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::LoadGameFromSlot("LEVEL_DATA",0));
+	int32 lastEpisode = LoadGameManager->playerEpisode;
+	int32 lastLevel = LoadGameManager->playerLevel;
+
+	FString levelStr = FString::FromInt(lastEpisode) + "-" + FString::FromInt(lastLevel);
+	FName lastLevelName = FName(*levelStr);
+	UGameplayStatics::OpenLevel(GetWorld(), lastLevelName);
 }
 
 void AMainMenuContainer::ToMainMenu()

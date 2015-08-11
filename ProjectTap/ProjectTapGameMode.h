@@ -3,6 +3,7 @@
 #pragma once
 #include "GameFramework/GameMode.h"
 #include "CustomGameState.h"
+#include "LevelManagement/LevelSaveManager.h"
 #include "ProjectTapGameMode.generated.h"
 
 /**
