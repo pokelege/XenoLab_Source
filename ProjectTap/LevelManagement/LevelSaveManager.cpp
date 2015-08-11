@@ -83,6 +83,7 @@ int32 ULevelSaveManager::GetCurrentLevel(FName buttonText)
 			afterBreak = true;
 		}
 	}
+	int length = level.Len();
 	if (level.Len() > 0)
 	{
 		int32 ret = FCString::Atoi(*level);

@@ -26,5 +26,5 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Save Data")
 	int32 GetCurrentEpisode(FName buttonText);
 	UFUNCTION(BlueprintCallable, Category = "Save Data")
-	int32 GetCurrentLevel(FName buttonText);\
+	int32 GetCurrentLevel(FName buttonText);
 };
