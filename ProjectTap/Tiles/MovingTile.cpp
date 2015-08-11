@@ -54,7 +54,7 @@ void AMovingTile::BeginPlay()
 
 	if (carryOn != nullptr)
 	{
-		Children.Add(carryOn);
+		carryOn->AttachRootComponentToActor(this);
 	}
 }
 
