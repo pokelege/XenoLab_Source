@@ -70,6 +70,7 @@ public:
 
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent) override;
+
 #endif
 
 	//for a 3D vector, this function will find the axis with largest value

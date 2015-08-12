@@ -5,6 +5,7 @@
 #include "ICarriable.h"
 #include "OffensiveTiles/Laser.h"
 #include "Runtime/CoreUObject/Public/UObject/UnrealType.h"
+#include "JumpTile.h"
 
 // Sets default values
 AMovingTile::AMovingTile()
@@ -55,6 +56,7 @@ void AMovingTile::BeginPlay()
 	if (carryOn != nullptr)
 	{
 		carryOn->AttachRootComponentToActor(this);
+		UpdateCarryOn();
 	}
 }
 
@@ -131,24 +133,30 @@ int32 AMovingTile::NextIndex()
 
 int32 AMovingTile::IncrementIndex()
 {
-	if (pauseTimeCounter < pauseBetweenNodes)
-	{
-		pauseTimeCounter += GetWorld()->DeltaTimeSeconds;
-	}
-	else
-	{
-		bool exceedEnd = NextIndex() >= path.Num() - 1;
-		bool exceedBegining = NextIndex() == 0;
+	auto jumpTile = Cast<AJumpTile>(carryOn);
+	auto isJumptileWaitingForBall = jumpTile != nullptr && jumpTile->IsWaitingForBall();
 
-		currentPathIndex = NextIndex();
-
-		if ((exceedEnd || exceedBegining) && reverseRouteWhenDone)
+	if (!isJumptileWaitingForBall)
+	{
+		if (pauseTimeCounter < pauseBetweenNodes)
 		{
-			pathReversed = !pathReversed;
+			pauseTimeCounter += GetWorld()->DeltaTimeSeconds;
 		}
+		else
+		{
+			bool exceedEnd = NextIndex() >= path.Num() - 1;
+			bool exceedBegining = NextIndex() == 0;
+
+			currentPathIndex = NextIndex();
+
+			if ((exceedEnd || exceedBegining) && reverseRouteWhenDone)
+			{
+				pathReversed = !pathReversed;
+			}
 
 
-		reset();
+			reset();
+		}
 	}
 
 	return currentPathIndex;

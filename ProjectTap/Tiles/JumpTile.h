@@ -33,9 +33,11 @@ public:
 	virtual void PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent) override;
 #endif
 
+	bool IsWaitingForBall();
+
 	void SetWaitForBall();
 
-
+	virtual void Disable() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void activate() override;

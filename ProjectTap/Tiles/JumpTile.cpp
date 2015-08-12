@@ -48,6 +48,12 @@ void AJumpTile::SetWaitForBall()
 	isBallComing = true;
 }
 
+bool AJumpTile::IsWaitingForBall()
+{
+	return isBallComing;
+}
+
+
 void AJumpTile::activate()
 {
 	if(rotationSequence == nullptr || target == nullptr || ball == nullptr || !IsEnabled() || activated) return;
@@ -123,7 +129,6 @@ void AJumpTile::HighlightTile()
 		target->Super::HighlightTile();
 		if (isBallComing)
 		{
-			isBallComing = false;
 			auto newDir = (GetActorLocation() - target->GetActorLocation()).GetSafeNormal();
 			ball->AddVelocity(newDir * ballLandingForceStrength, true);
 		}
@@ -139,6 +144,11 @@ void AJumpTile::CancelHighlightTile()
 	}
 }
 
+void AJumpTile::Disable()
+{
+	Super::Disable();
+	isBallComing = false;
+}
 
 
 
