@@ -332,4 +332,6 @@ void ADraggableMoveTile::RemoveFocus()
 	}
 
 	mousePressTimer = 0.0f;
+	CancelHighlightTile();
+	CancelHighlightEdge();
 }
