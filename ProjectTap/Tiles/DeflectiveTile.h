@@ -51,7 +51,7 @@ public:
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Tile )
 		DeflectiveTileType type;
 private:
-	bool ballCanTouch = true;
+	bool isSpining = true;
 	void AdjustMeshOrientation();
 public:
 
