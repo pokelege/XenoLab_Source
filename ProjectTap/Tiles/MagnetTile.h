@@ -14,6 +14,7 @@ class PROJECTTAP_API AMagnetTile : public ATile, public ICarriable
 {
 	GENERATED_BODY()
 
+	static const GroundableInfo groundableInfo;
 	TScriptDelegate<FWeakObjectPtr> delegate;
 	AMagnetTile* subMagnet = nullptr;
 	static const int32 MAX_DEPTH;
@@ -54,6 +55,7 @@ public:
 
 	virtual void deactivate() override;
 	virtual void activate() override;
+	virtual const struct GroundableInfo* GetGroundableInfo() const override;
 private:
 	FVector GetClampedForwardVector(bool infiniteLength = false);
 

@@ -11,7 +11,7 @@
 
 
 const int32 AMagnetTile::MAX_DEPTH = 8;
-
+const GroundableInfo AMagnetTile::groundableInfo = GroundableInfo(FVector(0, 0, 40), true);
 AMagnetTile::AMagnetTile() : ATile()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -38,6 +38,11 @@ AMagnetTile::AMagnetTile() : ATile()
 	magnetSound->SetSound( magnetSoundFile.Object );
 	magnetSound->bAutoActivate = false;
 	magnetSound->AttachTo( BoxCollision );
+}
+
+const GroundableInfo* AMagnetTile::GetGroundableInfo() const
+{
+	return &AMagnetTile::groundableInfo;
 }
 
 void AMagnetTile::SetDepth( int32 depth )
