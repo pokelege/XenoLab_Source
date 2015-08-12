@@ -180,11 +180,11 @@ void ADeflectiveTile::Spin(float dt)
 			break;
 		}
 
-		ballCanTouch = false;
+		isSpining = false;
 	}
 	else
 	{
-		ballCanTouch = true;
+		isSpining = true;
 	}
 }
 
@@ -192,7 +192,6 @@ void ADeflectiveTile::turnOffHighlight(bool offTile , bool offEdge )
 {
 	Super::turnOffHighlightEdge();
 }
-
 
 void ADeflectiveTile::activate()
 {
@@ -270,7 +269,7 @@ void ADeflectiveTile::OnHit(class AActor* OtherActor,
 {
 	if (auto ball = Cast<ABallPawn>(OtherActor))
 	{
-		if (ballCanTouch && !ball->isDying())
+		if (isSpining && !ball->isDying())
 		{
 			auto incomingSpeed = Cast<USphereComponent>(ball->RootComponent)->GetPhysicsLinearVelocity().Size();
 			auto incomingVector = clampShortAxis(GetActorLocation() - ball->GetActorLocation());

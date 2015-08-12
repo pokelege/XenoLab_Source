@@ -151,7 +151,6 @@ void AJumpTile::Disable()
 }
 
 
-
 #if WITH_EDITOR
 void AJumpTile::PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent)
 {
