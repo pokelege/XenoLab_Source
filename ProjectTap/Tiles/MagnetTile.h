@@ -31,7 +31,7 @@ public:
 	float length = 5000.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Magnet)
-	float attractionSpeed = 80.0f;
+	float attractionSpeed = 25000.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Magnet)
 	float centerTolerance = 0.001f;
@@ -65,7 +65,6 @@ private:
 	void SetDepth(int32 depth);
 
 	AActor* GetMagnetHitActor(FHitResult& hit);
-	void CastMagnetRay(FHitResult& hit);
 	void PullBall( class ABallPawn* ball );
 	bool IsMaster();
 	void SpawnSubMagnet(const FVector& start, 
