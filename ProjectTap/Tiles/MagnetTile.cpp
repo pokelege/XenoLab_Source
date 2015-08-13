@@ -207,7 +207,7 @@ void AMagnetTile::PullBall( ABallPawn* ball )
 	}
 	float originalSpeed = prim->GetPhysicsLinearVelocity().Size();
 	float newSpeed = attractionSpeed + originalSpeed;
-	prim->SetPhysicsLinearVelocity(newSpeed * -GetActorForwardVector());
+	prim->SetPhysicsLinearVelocity( DeltaTime * newSpeed * -GetActorForwardVector());
 }
 
 void AMagnetTile::deactivate()
