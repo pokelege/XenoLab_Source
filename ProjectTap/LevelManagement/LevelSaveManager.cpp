@@ -91,3 +91,15 @@ int32 ULevelSaveManager::GetCurrentLevel(FName buttonText)
 	}
 	return INT_MAX;
 }
+
+FName ULevelSaveManager::LoadNextLevel()
+{
+	ULevelSaveManager* LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::CreateSaveGameObject(ULevelSaveManager::StaticClass()));
+	LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::LoadGameFromSlot("LEVEL_DATA", 0));
+	if (LoadGameManager == nullptr)
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), "1-1");
+	}
+	FString levelString = FString::FromInt(LoadGameManager->playerEpisode) + "-" + FString::FromInt(LoadGameManager->playerLevel);
+	return FName(*levelString);
+}

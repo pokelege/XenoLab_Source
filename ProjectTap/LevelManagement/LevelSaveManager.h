@@ -27,4 +27,7 @@ public:
 	int32 GetCurrentEpisode(FName buttonText);
 	UFUNCTION(BlueprintCallable, Category = "Save Data")
 	int32 GetCurrentLevel(FName buttonText);
+
+	UFUNCTION(BlueprintCallable, Meta = (WorldContext = "WorldContextObject", AdvancedDisplay = "2"), Category = "Save Data")
+	FName LoadNextLevel();
 };
