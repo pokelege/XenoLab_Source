@@ -18,10 +18,10 @@ class PROJECTTAP_API ARamp : public ABaseRampTile
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tile)
-	float forceMultiplier= 3000.0f;
+	float forceMultiplier= 2800.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tile)
-	float additionalZForce = 3100.0f;
+	float additionalZForce = 2900.0f;
 
 	ARamp();
 
