@@ -14,6 +14,8 @@
 #include "Tiles/DeflectiveTile.h"
 #include "Tiles/BlockingTileBase.h"
 #include "ProjectTapGameMode.h"
+#include "General/CheckpointSave.h"
+
 
 // Sets default values
 ABallPawn::ABallPawn()
@@ -417,6 +419,21 @@ void ABallPawn::ResetBallXYPosition( const FVector& position )
 	FVector newPosition( position.X , position.Y , GetActorLocation().Z );
 
 	SetActorLocation( newPosition );
+}
+
+void ABallPawn::SaveCheckpointData(FString name, FVector position, float restartSpeed)
+{
+	UE_LOG(LogTemp, Warning, TEXT("SAVING"));
+	UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *name);
+	UE_LOG(LogTemp, Warning, TEXT("Position: %s"), *position.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("Speed: %f"), restartSpeed);
+	UCheckpointSave* save = Cast<UCheckpointSave>(UGameplayStatics::CreateSaveGameObject(UCheckpointSave::StaticClass()));
+	save->CheckpointName = name;
+	save->Position = position;
+	save->Direction = FVector(0, 0, 0);
+	save->Speed = restartSpeed;
+	save->Enabled = true;
+	UGameplayStatics::SaveGameToSlot(save, save->SaveSlotName, save->UserIndex);
 }
 
 void ABallPawn::Kill()

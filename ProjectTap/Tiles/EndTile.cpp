@@ -46,6 +46,7 @@ void AEndTile::StartTransporting()
 {
 	targetBall->setInvincibility(true);
 	targetBallLastPosition = targetBall->GetActorLocation();
+
 	currentAnimationTime = 0;
 	ballToSocketCurveDuration = 0;
 	transportScalingCurveDuration = 0;
