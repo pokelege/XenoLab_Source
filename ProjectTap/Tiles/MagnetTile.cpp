@@ -182,32 +182,35 @@ class UPrimitiveComponent* OtherComp ,
 
 void AMagnetTile::PullBall( ABallPawn* ball )
 {
-	auto prim = Cast<UPrimitiveComponent>( ball->GetRootComponent() );
-	UWorld* world = GetWorld();
-	auto DeltaTime = world->DeltaTimeSeconds;
-	AProjectTapGameState* gameState;
-	if ( world != nullptr && ( gameState = world->GetGameState<AProjectTapGameState>() ) != nullptr && gameState->SetMagnetTile( this ) != this )
+	if (!ball->IsTransitioningByDeflectiveTile())
 	{
-		FVector angular = FVector::ZeroVector;
-		prim->SetPhysicsAngularVelocity( angular );
-		float distanceAtNormal = FVector::DotProduct( ball->GetActorLocation() - GetActorLocation() , GetActorForwardVector() );
-		FVector normalLoc = ( distanceAtNormal * GetActorForwardVector() ) + GetActorLocation();
-		FVector normalToBall = ball->GetActorLocation() - normalLoc;
-		float dist = normalToBall.Size();
-		if ( dist > centerTolerance )
+		auto prim = Cast<UPrimitiveComponent>(ball->GetRootComponent());
+		UWorld* world = GetWorld();
+		auto DeltaTime = world->DeltaTimeSeconds;
+		AProjectTapGameState* gameState;
+		if (world != nullptr && (gameState = world->GetGameState<AProjectTapGameState>()) != nullptr && gameState->SetMagnetTile(this) != this)
 		{
-			FVector toAdd = dist * -normalToBall.GetSafeNormal();
-			toAdd.Z = 0;
-			prim->AddRelativeLocation( toAdd );
+			FVector angular = FVector::ZeroVector;
+			prim->SetPhysicsAngularVelocity(angular);
+			float distanceAtNormal = FVector::DotProduct(ball->GetActorLocation() - GetActorLocation(), GetActorForwardVector());
+			FVector normalLoc = (distanceAtNormal * GetActorForwardVector()) + GetActorLocation();
+			FVector normalToBall = ball->GetActorLocation() - normalLoc;
+			float dist = normalToBall.Size();
+			if (dist > centerTolerance)
+			{
+				FVector toAdd = dist * -normalToBall.GetSafeNormal();
+				toAdd.Z = 0;
+				prim->AddRelativeLocation(toAdd);
+			}
 		}
+		if (isVertical)
+		{
+			attractionSpeed *= verticalForceMultiplier;
+		}
+		float originalSpeed = prim->GetPhysicsLinearVelocity().Size();
+		float newSpeed = attractionSpeed + originalSpeed;
+		prim->SetPhysicsLinearVelocity(DeltaTime * newSpeed * -GetActorForwardVector());
 	}
-	if ( isVertical )
-	{
-		attractionSpeed *= verticalForceMultiplier;
-	}
-	float originalSpeed = prim->GetPhysicsLinearVelocity().Size();
-	float newSpeed = attractionSpeed + originalSpeed;
-	prim->SetPhysicsLinearVelocity( DeltaTime * newSpeed * -GetActorForwardVector());
 }
 
 void AMagnetTile::deactivate()

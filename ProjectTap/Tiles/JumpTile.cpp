@@ -78,7 +78,7 @@ void AJumpTile::calculateImpulse()
 	auto goUpHeight = height - radius;
 	float t_up = FMath::Sqrt(2 * goUpHeight / -GetWorld()->GetGravityZ());
 
-	float fall_height = GetActorLocation().Z + goUpHeight - target->GetActorLocation().Z - radius;
+	float fall_height = GetActorLocation().Z + height - target->GetActorLocation().Z - 3 * radius;
 	float t_down = FMath::Sqrt(2 * fall_height / -GetWorld()->GetGravityZ());
 
 	float t = t_up + t_down;
@@ -89,8 +89,8 @@ void AJumpTile::calculateImpulse()
 	float verticalVelocity = -GetWorld()->GetGravityZ() * t_up;
 	auto dir = (target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
-	auto startPos = FVector(ball->GetActorLocation().X, ball->GetActorLocation().Y, ball->GetActorLocation().Z + radius);
-	auto targetPos = FVector(target->GetActorLocation().X, target->GetActorLocation().Y, target->GetActorLocation().Z + radius);
+	auto startPos = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z);
+	auto targetPos = FVector(target->GetActorLocation().X, target->GetActorLocation().Y, target->GetActorLocation().Z);
 	auto distance = FVector::Dist(targetPos, startPos);
 
 	//d = (vi + vf) / 2 * t

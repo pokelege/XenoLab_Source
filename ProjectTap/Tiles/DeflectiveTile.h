@@ -62,7 +62,8 @@ public:
 			   class UPrimitiveComponent* OtherComp,
 			   FVector NormalImpulse,
 			   const FHitResult& Hit);
-
+	
+    virtual void PostLoad() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void turnOffHighlight(bool offTile = true, bool offEdge = true) override;

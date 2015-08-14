@@ -132,6 +132,11 @@ void ABallPawn::SpawnCastingTrigger( BallCastType type )
 	}
 }
 
+bool ABallPawn::IsTransitioningByDeflectiveTile()
+{
+	return bDeflectiveTransition;
+}
+
 
 // Called every frame
 void ABallPawn::Tick( float DeltaTime )

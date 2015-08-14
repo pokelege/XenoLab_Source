@@ -101,6 +101,8 @@ public:
 		bool disableGravityWhenTransition = false);
 	void ResetBallXYPosition(const FVector& position);
 
+	bool IsTransitioningByDeflectiveTile();
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 

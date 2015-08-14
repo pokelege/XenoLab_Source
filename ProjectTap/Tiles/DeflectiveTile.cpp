@@ -130,6 +130,12 @@ void ADeflectiveTile::UpdateEdgeHighlight(float dt)
 	}
 }
 
+void ADeflectiveTile::PostLoad()
+{
+	Super::PostLoad();
+
+}
+
 void ADeflectiveTile::AdjustMeshOrientation()
 {
 	switch (type)
