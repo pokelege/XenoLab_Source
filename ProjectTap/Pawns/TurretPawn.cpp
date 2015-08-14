@@ -233,7 +233,6 @@ void ATurretPawn::SetupPlayerInputComponent(class UInputComponent* InputComponen
 
 void ATurretPawn::UpdateLaserTag(float dt)
 {
-	auto l = target->GetActorLocation();
 	direction = TurretGunMesh->GetForwardVector();
 
 	FCollisionQueryParams queryParams;

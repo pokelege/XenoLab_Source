@@ -150,3 +150,12 @@ void AEndTile::EndLevel(ABallPawn* ball)
 		StartTransporting();
 	}
 }
+
+OffsetInfo AEndTile::getOffsetInfo()
+{
+	OffsetInfo data;
+	data.offsetForCollision = FVector(0.0f, 0.0f, 0.0f);
+	data.scaleForCollision = FVector(1.f, 1.f, 1.0f);
+	data.offsetForCarryOn = FVector(0.0f, 0.0f, 90.0f);
+	return data;
+}
