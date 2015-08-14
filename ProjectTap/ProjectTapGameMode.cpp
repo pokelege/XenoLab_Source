@@ -11,6 +11,8 @@
 #include "General/ProjectTapCameraComponent.h"
 #include "General/ProjectTapCamera.h"
 #include "Runtime/Engine/Public/PhysicsPublic.h"
+#include "General/Checkpoint.h"
+
 
 AProjectTapGameMode::AProjectTapGameMode( const FObjectInitializer& initializer ): Super( initializer )
 {
@@ -45,15 +47,24 @@ void AProjectTapGameMode::StartPlay()
 	ABallPawn* ball = nullptr;
 	if ( UWorld* world = GetWorld() )
 	{
-		AActor* playerStart = FindPlayerStart( 0 , FString( "Player" ) );
+		AActor* playerStart = FindPlayerStart(0, FString("Player"));
 		FTransform playerTransform = playerStart->GetTransform();
+
+		UCheckpointSave* saveData = GetCheckpointData(world);
+
+		FVector spawnPosition;
+		if (saveData)
+			spawnPosition = FVector(saveData->Position.X, saveData->Position.Y, saveData->Position.Z);
+		else
+			spawnPosition = playerTransform.GetTranslation();
+			
 		if ( ABallPlayerStart* realPlayerStart = Cast<ABallPlayerStart>( playerStart ) )
 		{
 			auto possibleCamera = realPlayerStart->camera == nullptr ? nullptr : Cast<UProjectTapCameraComponent>( realPlayerStart->camera->GetComponentByClass( UProjectTapCameraComponent::StaticClass() ) );
 			FActorSpawnParameters params;
 			ball = world->SpawnActor<ABallPawn>(
 				ABallPawn::StaticClass() ,
-				playerTransform.GetTranslation() ,
+				spawnPosition ,
 				FRotator( playerTransform.GetRotation() ) ,
 				params );
 
@@ -61,7 +72,7 @@ void AProjectTapGameMode::StartPlay()
 
 			if ( ball != nullptr )
 			{
-				ball->AddVelocity( realPlayerStart->initialVelocity , realPlayerStart->GetActorLocation() );
+				ball->AddVelocity( realPlayerStart->initialVelocity, spawnPosition );
 				if ( possibleCamera != nullptr && realPlayerStart->followPlayer )
 				{
 					ball->setCamera( realPlayerStart );
@@ -75,7 +86,7 @@ void AProjectTapGameMode::StartPlay()
 		else
 		{
 			FActorSpawnParameters params;
-			ball = world->SpawnActor<ABallPawn>( ABallPawn::StaticClass() , playerTransform.GetTranslation() , FRotator( playerTransform.GetRotation() ) , params );
+			ball = world->SpawnActor<ABallPawn>(ABallPawn::StaticClass(), spawnPosition, FRotator(playerTransform.GetRotation()), params);
 		}
 
 		gameState->SetPlayer(ball);
@@ -85,6 +96,36 @@ void AProjectTapGameMode::StartPlay()
 
 	gameState->SetGameState( CustomGameState::GAME_STATE_PLAYING );
 	if ( isMenu ) gameState->SetGameMode( CustomGameMode::GAME_MODE_MAIN_MENU );
+}
+
+UCheckpointSave* AProjectTapGameMode::GetCheckpointData(UWorld* world)
+{
+	UE_LOG(LogTemp, Warning, TEXT("LOADING"));
+	UCheckpointSave* load = Cast<UCheckpointSave>(UGameplayStatics::CreateSaveGameObject(UCheckpointSave::StaticClass()));
+	load = Cast<UCheckpointSave>(UGameplayStatics::LoadGameFromSlot(load->SaveSlotName, load->UserIndex));
+
+	if (load && load->Enabled)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("LOAD FOUND"));
+		UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *load->CheckpointName);
+		UE_LOG(LogTemp, Warning, TEXT("Position: %s"), *load->Position.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("Direction: %s"), *load->Direction.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("Speed: %f"), load->Speed);
+
+		for (TActorIterator<ACheckpoint> ActorItr(world); ActorItr; ++ActorItr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ITERATE: %s"), *ActorItr->GetName());
+
+			if (ActorItr->GetName() == load->CheckpointName)
+			{
+				ActorItr->Disable();
+				UE_LOG(LogTemp, Warning, TEXT("CHECKPOINT FOUND"));
+				break;
+			}
+		}
+	}
+
+	return load;
 }
 
 bool AProjectTapGameMode::IsGodMode()
@@ -114,7 +155,10 @@ void AProjectTapGameMode::Respawn()
 bool AProjectTapGameMode::LoadNextLevel()
 {
 	if(loadingLevel) return false;
-	
+
+	UCheckpointSave* save = Cast<UCheckpointSave>(UGameplayStatics::CreateSaveGameObject(UCheckpointSave::StaticClass()));
+	UGameplayStatics::SaveGameToSlot(save, save->SaveSlotName, save->UserIndex);
+
 	// load in previous data
 	ULevelSaveManager* LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::CreateSaveGameObject(ULevelSaveManager::StaticClass()));
 	LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::LoadGameFromSlot("LEVEL_DATA", 0));
