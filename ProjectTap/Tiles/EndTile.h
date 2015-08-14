@@ -3,12 +3,13 @@
 #pragma once
 
 #include "Tiles/Tile.h"
+#include "Tiles/ICarriable.h"
 #include "EndTile.generated.h"
 /**
  *
  */
 UCLASS()
-class PROJECTTAP_API AEndTile : public ATile
+class PROJECTTAP_API AEndTile : public ATile, public ICarriable
 {
 	GENERATED_BODY()
 
@@ -41,7 +42,7 @@ public:
 	virtual void BeginDestroy() override;
 
 	virtual void Tick( float DeltaTime ) override;
-
+	virtual OffsetInfo getOffsetInfo() override;
 	UFUNCTION()
 	virtual void OnGameStateChanged( const CustomGameState gameState ) override;
 
