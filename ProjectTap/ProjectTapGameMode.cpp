@@ -39,7 +39,6 @@ void AProjectTapGameMode::BeginPlay()
 	auto scene = physicsWorld->GetPhysXScene(0);
 }
 
-
 void AProjectTapGameMode::StartPlay()
 {
 	Super::StartPlay();
@@ -53,8 +52,9 @@ void AProjectTapGameMode::StartPlay()
 		UCheckpointSave* saveData = GetCheckpointData(world);
 
 		FVector spawnPosition;
-		if (saveData)
-			spawnPosition = FVector(saveData->Position.X, saveData->Position.Y, saveData->Position.Z);
+
+		if (saveData && saveData->Enabled)
+			spawnPosition = FVector(saveData->Position.X, saveData->Position.Y, saveData->Position.Z + 20.0f);
 		else
 			spawnPosition = playerTransform.GetTranslation();
 			
@@ -113,16 +113,8 @@ UCheckpointSave* AProjectTapGameMode::GetCheckpointData(UWorld* world)
 		UE_LOG(LogTemp, Warning, TEXT("Speed: %f"), load->Speed);
 
 		for (TActorIterator<ACheckpoint> ActorItr(world); ActorItr; ++ActorItr)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("ITERATE: %s"), *ActorItr->GetName());
-
 			if (ActorItr->GetName() == load->CheckpointName)
-			{
-				ActorItr->Disable();
-				UE_LOG(LogTemp, Warning, TEXT("CHECKPOINT FOUND"));
-				break;
-			}
-		}
+				ActorItr->enabled = false;
 	}
 
 	return load;
@@ -156,8 +148,7 @@ bool AProjectTapGameMode::LoadNextLevel()
 {
 	if(loadingLevel) return false;
 
-	UCheckpointSave* save = Cast<UCheckpointSave>(UGameplayStatics::CreateSaveGameObject(UCheckpointSave::StaticClass()));
-	UGameplayStatics::SaveGameToSlot(save, save->SaveSlotName, save->UserIndex);
+	ACheckpoint::ClearSave();
 
 	// load in previous data
 	ULevelSaveManager* LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::CreateSaveGameObject(ULevelSaveManager::StaticClass()));

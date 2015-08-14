@@ -22,11 +22,8 @@ public:
 	
 	ACheckpoint();
 
-	UFUNCTION(BlueprintCallable, Category = CPP_Visibility)
-		void Disable();
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = CPP_Animation)
-		void PlayOverlapAnimation();
+	UFUNCTION(BlueprintCallable, Category = CPP_SaveData)
+		static void ClearSave();
 
 	UFUNCTION()
 		void OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
