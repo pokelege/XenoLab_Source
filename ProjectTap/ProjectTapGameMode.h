@@ -4,6 +4,7 @@
 #include "GameFramework/GameMode.h"
 #include "CustomGameState.h"
 #include "LevelManagement/LevelSaveManager.h"
+#include "General/CheckpointSave.h"
 #include "ProjectTapGameMode.generated.h"
 
 /**
@@ -33,6 +34,13 @@ public:
 	AProjectTapGameMode ( const FObjectInitializer& initializer );
 	virtual void BeginPlay() override;
 	virtual void BeginDestroy() override;
+
+	/// <summary>
+	/// Loads checkpoint data from save file and sets values
+	/// Does not work if there is no save file or
+	///		the save's enabled variable is false
+	/// </summary>
+	UCheckpointSave* GetCheckpointData(UWorld* world);
 
 	bool IsGodMode();
 
