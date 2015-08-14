@@ -2,6 +2,7 @@
 
 #include "ProjectTap.h"
 #include "Checkpoint.h"
+#include "CheckpointSave.h"
 #include "Pawns/BallPawn.h"
 
 
@@ -20,15 +21,10 @@ ACheckpoint::ACheckpoint()
 	Billboard->AttachTo(RootComponent);
 }
 
-void ACheckpoint::Disable()
+void ACheckpoint::ClearSave()
 {
-	enabled = false;
-	RootComponent->SetVisibility(false, true);
-}
-
-void ACheckpoint::PlayOverlapAnimation_Implementation()
-{
-	UE_LOG(LogTemp, Warning, TEXT("PLAYOVERLAPANIMATION NOT IMPLEMENTED - Use Native Event!"));
+	UCheckpointSave* save = Cast<UCheckpointSave>(UGameplayStatics::CreateSaveGameObject(UCheckpointSave::StaticClass()));
+	UGameplayStatics::SaveGameToSlot(save, save->SaveSlotName, save->UserIndex);
 }
 
 void ACheckpoint::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -42,7 +38,6 @@ void ACheckpoint::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCompo
 				{
 					ball->SaveCheckpointData(GetName(), Collider->GetComponentLocation());
 					enabled = false;
-					PlayOverlapAnimation();
 				}
 				else
 					ball->Kill();
