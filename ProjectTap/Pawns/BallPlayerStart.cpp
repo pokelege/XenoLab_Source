@@ -4,6 +4,10 @@
 #include "BallPlayerStart.h"
 
 const GroundableInfo ABallPlayerStart::groundableInfo = GroundableInfo(FVector(0, 0, 92), true);
+ABallPlayerStart::ABallPlayerStart()
+{
+	PlayerStartTag = TEXT("Player");
+}
 const GroundableInfo* ABallPlayerStart::GetGroundableInfo() const
 {
 	return &ABallPlayerStart::groundableInfo;
