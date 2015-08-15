@@ -47,7 +47,7 @@ public:
 	void TransitionToMenu( AActor* menuPlaceable , const FVector& pos );
 
 	UFUNCTION( BluePrintCallable , Category = MainMenu )
-		void ContinueGame();
+		void ContinueGame(const FName& levelName);
 
 	UFUNCTION( BluePrintCallable , Category = MainMenu )
 		void ToMainMenu();

@@ -208,20 +208,26 @@ void AMainMenuContainer::StartNewGame()
 	SetWidgetVisibility(currentMenu, EVisibility::Hidden);
 }
 
-void AMainMenuContainer::ContinueGame()
+void AMainMenuContainer::ContinueGame(const FName& levelName)
 {
 	//currentMenuState = MenuState::CONTINUE;
 	//load last played level name
 	
-	// load in level save slot
-	ULevelSaveManager* LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::CreateSaveGameObject(ULevelSaveManager::StaticClass()));
-	LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::LoadGameFromSlot("LEVEL_DATA",0));
-	int32 lastEpisode = LoadGameManager->playerEpisode;
-	int32 lastLevel = LoadGameManager->playerLevel;
+	//// load in level save slot
+	//ULevelSaveManager* LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::CreateSaveGameObject(ULevelSaveManager::StaticClass()));
+	//LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::LoadGameFromSlot("LEVEL_DATA",0));
+	//int32 lastEpisode = LoadGameManager->playerEpisode;
+	//int32 lastLevel = LoadGameManager->playerLevel;
 
-	FString levelStr = FString::FromInt(lastEpisode) + "-" + FString::FromInt(lastLevel);
-	FName lastLevelName = FName(*levelStr);
-	UGameplayStatics::OpenLevel(GetWorld(), lastLevelName);
+	//FString levelStr = FString::FromInt(lastEpisode) + "-" + FString::FromInt(lastLevel);
+	//FName lastLevelName = FName(*levelStr);
+	//UGameplayStatics::OpenLevel(GetWorld(), lastLevelName);
+	for (TActorIterator<AEndTile> v_itr(GetWorld()); v_itr; ++v_itr)
+	{
+		v_itr->loadLevelName = levelName;
+		break;
+	}
+	StartNewGame();
 }
 
 void AMainMenuContainer::ToMainMenu()
@@ -248,7 +254,7 @@ void AMainMenuContainer::ToCredits()
 	/*TransitionToMenu(creditsPlacable, creditMenuShowLocation);*/
 	for (TActorIterator<AEndTile> v_itr(GetWorld()); v_itr; ++v_itr)
 	{
-		v_itr->loadLevelName = TEXT("DCredits");
+		v_itr->loadLevelName = TEXT("Credits");
 		break;
 	}
 
