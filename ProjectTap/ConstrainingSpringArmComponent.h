@@ -19,6 +19,7 @@ protected:
 	bool lockY = false;
 	bool lockZ = true;
 public:
+	UConstrainingSpringArmComponent();
 	void SetTargetOffsetCustom(const FVector& newTargetOffset);
 	void SetLockPosition(const FVector& lastLockPosition);
 	UFUNCTION(BlueprintCallable, Category = Lock)

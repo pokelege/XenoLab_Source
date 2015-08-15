@@ -12,7 +12,7 @@
 #include "General/ProjectTapCamera.h"
 #include "Runtime/Engine/Public/PhysicsPublic.h"
 #include "General/Checkpoint.h"
-
+#include "ConstrainingSpringArmComponent.h"
 
 AProjectTapGameMode::AProjectTapGameMode( const FObjectInitializer& initializer ): Super( initializer )
 {
@@ -75,7 +75,9 @@ void AProjectTapGameMode::StartPlay()
 				ball->AddVelocity( realPlayerStart->initialVelocity, spawnPosition );
 				if ( possibleCamera != nullptr && realPlayerStart->followPlayer )
 				{
-					ball->setCamera( realPlayerStart );
+					FVector saveOffset = (saveData && saveData->Enabled) ? (spawnPosition - realPlayerStart->GetActorLocation()) : FVector::ZeroVector;
+					ball->spring->SetLockPosition(spawnPosition);
+					ball->setCamera( realPlayerStart, &saveOffset );
 					possibleCamera = ball->GetCamera();
 				}
 			}

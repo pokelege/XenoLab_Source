@@ -3,8 +3,10 @@
 #include "ProjectTap.h"
 #include "ConstrainingSpringArmComponent.h"
 
-
-
+UConstrainingSpringArmComponent::UConstrainingSpringArmComponent()
+{
+	TargetArmLength = 0;
+}
 
 void UConstrainingSpringArmComponent::UpdateDesiredArmLocation(bool bDoTrace, bool bDoLocationLag, bool bDoRotationLag, float DeltaTime)
 {

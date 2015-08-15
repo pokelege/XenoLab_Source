@@ -474,7 +474,7 @@ void ABallPawn::SetGlowForever(bool isGlowing)
 	}
 }
 
-void ABallPawn::setCamera( ABallPlayerStart* playerStart )
+void ABallPawn::setCamera( ABallPlayerStart* playerStart, const FVector* extraPosition)
 {
 	if ( playerStart != nullptr )
 	{
@@ -482,11 +482,10 @@ void ABallPawn::setCamera( ABallPlayerStart* playerStart )
 		spring->SetLockY(playerStart->lockY);
 		spring->SetLockZ(playerStart->lockZ);
 		cameraComponent->SetWorldRotation( playerStart->camera->GetActorRotation() );
-		cameraComponent->SetWorldLocation( playerStart->camera->GetActorLocation() );
+		cameraComponent->SetRelativeLocation(FVector(0, 0, 0));
 		cameraComponent->PostProcessSettings = Cast<UProjectTapCameraComponent>( playerStart->camera->GetComponentByClass( UProjectTapCameraComponent::StaticClass() ) )->PostProcessSettings;
-		spring->SetTargetOffsetCustom( cameraComponent->RelativeLocation );
-		cameraComponent->SetRelativeLocation( FVector( 0 , 0 , 0 ) );
-
+		spring->SetTargetOffsetCustom(playerStart->camera->GetActorLocation() - playerStart->GetActorLocation());
+		
 		spring->bEnableCameraLag = playerStart->lagCamera;
 		spring->CameraLagSpeed = playerStart->lagSpeed;
 		spring->CameraLagMaxDistance = playerStart->lagMaxDistance;
