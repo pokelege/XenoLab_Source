@@ -133,7 +133,7 @@ public:
 		FVector NormalImpulse,
 		const FHitResult& Hit);
 
-	void setCamera(class ABallPlayerStart* playerStart);
+	void setCamera(class ABallPlayerStart* playerStart, const FVector* extraPosition = nullptr);
 	UProjectTapCameraComponent* GetCamera();
 
 
