@@ -48,5 +48,6 @@ public:
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Camera )
 		bool lockZ = true;
 
+	ABallPlayerStart();
 	virtual const struct GroundableInfo* GetGroundableInfo() const override;
 };
