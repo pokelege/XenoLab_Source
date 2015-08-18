@@ -439,8 +439,11 @@ void ABallPawn::SaveCheckpointData(FString name, FVector position, float restart
 void ABallPawn::Kill()
 {
 	auto gameMode = Cast <AProjectTapGameMode>(GetWorld()->GetAuthGameMode());
+
+#if WITH_EDITOR
 	if (!gameMode->IsGodMode())
 	{
+#endif
 		AProjectTapGameState* gameState = GetWorld()->GetGameState<AProjectTapGameState>();
 		if (gameState && !bInvincible && gameState->GetState() == CustomGameState::GAME_STATE_PLAYING && gameState->GetMode() != CustomGameMode::GAME_MODE_MAIN_MENU)
 		{
@@ -451,7 +454,9 @@ void ABallPawn::Kill()
 			spring->SetLockY(true);
 			spring->SetLockZ(true);
 		}
+#if WITH_EDITOR
 	}
+#endif
 }
 
 void ABallPawn::FellOutOfWorld( const class UDamageType & dmgType )
@@ -506,6 +511,8 @@ void ABallPawn::OnHit( class AActor* OtherActor,
 			AddVelocity( FVector::ZeroVector , true );
 		}
 	}
+
+	
 }
 
 UProjectTapCameraComponent* ABallPawn::GetCamera()

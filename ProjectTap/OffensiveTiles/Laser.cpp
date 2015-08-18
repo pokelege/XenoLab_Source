@@ -13,7 +13,7 @@
 #include "Engine/GameInstance.h"
 
 #define printonscreen(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::White,text)
-const int ALaser::MAX_DEPTH = 8;
+const int ALaser::MAX_DEPTH = 20;
 const GroundableInfo ALaser::groundableInfo = GroundableInfo(FVector(0,0,40), true);
 // Sets default values
 ALaser::ALaser()
@@ -67,6 +67,7 @@ void ALaser::BeginPlay()
 	laserParticle->EmitterInstances[0]->SetBeamTargetPoint(GetActorLocation(), 0);
 	laserEmitSound->Play();
 }
+
 void ALaser::BeginDestroy()
 {
 	UWorld* world = GetWorld();
