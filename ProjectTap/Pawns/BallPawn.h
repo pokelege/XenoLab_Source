@@ -23,6 +23,7 @@ private:
 	friend class ADeflectiveTile;
 	FVector currentNormal;
 public:
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ball)
 		FVector initialVelocity = FVector(0.0f, 0.0f, 0.0f);
 	UAudioComponent* dieSound = nullptr;
@@ -43,6 +44,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ball)
 	class UConstrainingSpringArmComponent* spring;
 
+	BallHitDuringJumpDelegate ballHitDuringJumpDelegate;
 private:
 	class APawnCastingTrigger* rampTrigger = nullptr;
 	class APawnCastingTrigger* blockingTrigger = nullptr;

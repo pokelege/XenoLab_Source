@@ -2,6 +2,7 @@
 
 #include "ProjectTap.h"
 #include "JumpTile.h"
+#include "Pawns/BallPawn.h"
 #include "ProjectTapGameState.h"
 
 const FName AJumpTile::JUMP_MESH_PATH = FName("/Game/Models/Jump");
@@ -35,7 +36,7 @@ void AJumpTile::BeginPlay()
 	auto world = GetWorld();
 	auto state = Cast<AProjectTapGameState>(world->GetGameState());
 	auto ball = state->GetPlayer();
-	//ballHitDuringJump
+	//ball->ballHitDuringJumpDelegate.BindRaw
 }
 
 void AJumpTile::Tick( float DeltaTime )

@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Tiles/BaseRampTile.h"
-#include "Pawns/BallPawn.h"
 #include "JumpTile.generated.h"
 
 /**
@@ -14,12 +13,12 @@ class PROJECTTAP_API AJumpTile : public ABaseRampTile
 {
 	GENERATED_BODY()
 	
-	BallHitDuringJumpDelegate ballHitDuringJump;
 	static const FName JUMP_MESH_PATH;
 	FVector jumpVelocity;
 	bool isBallComing = false;
 
 	void StopWaitingForBall();
+	void TargetStopWaitingForBall();
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Jump)
