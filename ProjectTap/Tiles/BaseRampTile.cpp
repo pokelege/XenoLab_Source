@@ -101,8 +101,9 @@ OffsetInfo ABaseRampTile::getOffsetInfo()
 {
 	OffsetInfo data;
 	data.offsetForCollision = FVector(0.0f, 0.0f, 5.0f);
-	data.scaleForCollision = FVector(1.0f, 1.0f, 1.4f);
+	data.scaleForCollision = FVector(1.0f, 1.0f, 1.0f);
 	data.offsetForCarryOn = FVector(0.0f, 0.0f, 11.3f);
+	data.offsetForParent = FVector(0.0f, 0.0f, -5.0f);
 	return data;
 }
 

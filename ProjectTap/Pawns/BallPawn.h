@@ -6,13 +6,15 @@
 #include "PawnCastingTrigger.h"
 #include "BallPawn.generated.h"
 
+DECLARE_DELEGATE_OneParam(BallHitDuringJumpDelegate, class AJumpTile)
+
 UCLASS()
 class PROJECTTAP_API ABallPawn : public APawn
 {
 	GENERATED_BODY()
 
-		//these two vectors are used when the ball
-		//transits to the center of a tile
+	//these two vectors are used when the ball
+	//transits to the center of a tile
 	FVector transitionNormal;
 	FVector lastAnchorPosition;
 
@@ -40,6 +42,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ball)
 	class UConstrainingSpringArmComponent* spring;
+
 private:
 	class APawnCastingTrigger* rampTrigger = nullptr;
 	class APawnCastingTrigger* blockingTrigger = nullptr;
@@ -80,7 +83,7 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, Category = "Ball")
-		void AddVelocity(const FVector& vel, bool clearForce = true);
+	void AddVelocity(const FVector& vel, bool clearForce = true);
 	void AddVelocity(const FVector& vel, const FVector& resetPos, bool clearForce = true);
 
 	//reset ball to the center of the tile when hit

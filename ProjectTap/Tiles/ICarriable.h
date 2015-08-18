@@ -12,6 +12,7 @@ struct OffsetInfo
 	FVector scaleForCollision;
 	FVector offsetForCollision;
 	FVector offsetForCarryOn;
+	FVector offsetForParent;
 };
 
 /**

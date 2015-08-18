@@ -49,7 +49,7 @@ public:
 	ALaser();
 
 	UFUNCTION()
-		void OnStateChanged( const CustomGameState newState );
+	void OnStateChanged( const CustomGameState newState );
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
