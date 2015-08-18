@@ -9,10 +9,10 @@
 
 struct OffsetInfo
 {
-	FVector scaleForCollision;
-	FVector offsetForCollision;
-	FVector offsetForCarryOn;
-	FVector offsetForParent;
+	FVector scaleForCollision= FVector::ZeroVector;
+	FVector offsetForCollision= FVector::ZeroVector;
+	FVector offsetForCarryOn= FVector::ZeroVector;
+	FVector offsetForParent= FVector::ZeroVector;
 };
 
 /**

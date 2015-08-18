@@ -5,6 +5,7 @@
 #include "DataStructure/GVertex.h"
 #include "DataStructure/Graph.h"
 #include "Classes/Particles/ParticleEmitter.h"
+#include "BaseRampTile.h"
 //#include <cassert>
 
 ADraggableMoveTile::ADraggableMoveTile()
@@ -14,7 +15,6 @@ ADraggableMoveTile::ADraggableMoveTile()
 
 	BoxCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	BoxCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
-	BoxCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> mesh( TEXT( "/Game/Models/SM_DragTile" ) );
 	TileMesh->SetStaticMesh( mesh.Object );
@@ -51,8 +51,13 @@ void ADraggableMoveTile::Initialize()
 			BoxCollision->SetRelativeScale3D(scale);
 			BoxCollision->AddLocalOffset(offset);
 		}
+
+		if (carryOn->IsA(ABaseRampTile::StaticClass()))
+		{
+			BoxCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+		}
 	}
-	else
+	else 
 	{
 		BoxCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 	}
