@@ -18,6 +18,8 @@ class PROJECTTAP_API AJumpTile : public ABaseRampTile
 	static const FName JUMP_MESH_PATH;
 	FVector jumpVelocity;
 	bool isBallComing = false;
+
+	void StopWaitingForBall();
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Jump)

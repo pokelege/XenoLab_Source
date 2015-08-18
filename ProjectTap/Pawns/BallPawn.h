@@ -6,7 +6,7 @@
 #include "PawnCastingTrigger.h"
 #include "BallPawn.generated.h"
 
-DECLARE_DELEGATE_OneParam(BallHitDuringJumpDelegate, class AJumpTile)
+DECLARE_DELEGATE(BallHitDuringJumpDelegate)
 
 UCLASS()
 class PROJECTTAP_API ABallPawn : public APawn

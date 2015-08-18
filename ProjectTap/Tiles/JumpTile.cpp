@@ -49,6 +49,19 @@ void AJumpTile::Tick( float DeltaTime )
 	}
 }
 
+void AJumpTile::StopWaitingForBall()
+{
+	isBallComing = false;
+}
+
+void AJumpTile::TargetStopWaitingForBall()
+{
+	if (target != nullptr)
+	{
+		target->StopWaitingForBall();
+	}
+}
+
 void AJumpTile::SetWaitForBall()
 {
 	isBallComing = true;
