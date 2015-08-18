@@ -17,7 +17,9 @@ class PROJECTTAP_API AJumpTile : public ABaseRampTile
 	FVector jumpVelocity;
 	bool isBallComing = false;
 
+	UFUNCTION()
 	void StopWaitingForBall();
+	UFUNCTION()
 	void TargetStopWaitingForBall();
 public:
 

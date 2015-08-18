@@ -33,10 +33,7 @@ void AJumpTile::BeginPlay()
 		material->SetScalarParameterValue( TEXT( "Rotation" ) , 1.0f - rot );
 	}
 	
-	auto world = GetWorld();
-	auto state = Cast<AProjectTapGameState>(world->GetGameState());
-	auto ball = state->GetPlayer();
-	//ball->ballHitDuringJumpDelegate.BindRaw
+
 }
 
 void AJumpTile::Tick( float DeltaTime )
@@ -53,6 +50,10 @@ void AJumpTile::Tick( float DeltaTime )
 void AJumpTile::StopWaitingForBall()
 {
 	isBallComing = false;
+	auto world = GetWorld();
+	auto state = Cast<AProjectTapGameState>(world->GetGameState());
+	auto ball = state->GetPlayer();
+	ball->ballHitDuringJumpDelegate.Unbind();
 }
 
 void AJumpTile::TargetStopWaitingForBall()
@@ -65,6 +66,10 @@ void AJumpTile::TargetStopWaitingForBall()
 
 void AJumpTile::SetWaitForBall()
 {
+	auto world = GetWorld();
+	auto state = Cast<AProjectTapGameState>(world->GetGameState());
+	auto ball = state->GetPlayer();
+	ball->ballHitDuringJumpDelegate.BindUObject(this, &AJumpTile::StopWaitingForBall);
 	isBallComing = true;
 }
 

@@ -6,13 +6,14 @@
 #include "PawnCastingTrigger.h"
 #include "BallPawn.generated.h"
 
-DECLARE_DELEGATE(BallHitDuringJumpDelegate)
 
 UCLASS()
 class PROJECTTAP_API ABallPawn : public APawn
 {
 	GENERATED_BODY()
 
+	DECLARE_DELEGATE(BallHitDuringJumpDelegate)
+		
 	//these two vectors are used when the ball
 	//transits to the center of a tile
 	FVector transitionNormal;

@@ -512,7 +512,7 @@ void ABallPawn::OnHit( class AActor* OtherActor,
 		}
 	}
 
-	ballHitDuringJumpDelegate.Execute();
+	ballHitDuringJumpDelegate.ExecuteIfBound();
 }
 
 UProjectTapCameraComponent* ABallPawn::GetCamera()
