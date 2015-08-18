@@ -28,7 +28,7 @@ public:
 		FVector Direction;
 
 	UPROPERTY(VisibleAnywhere, Category = Checkpoint)
-		float Speed;
+		float InitialSpeed;
 
 	UPROPERTY(VisibleAnywhere, Category = Checkpoint)
 		bool Enabled;

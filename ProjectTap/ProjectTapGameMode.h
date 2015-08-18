@@ -34,6 +34,7 @@ public:
 	AProjectTapGameMode ( const FObjectInitializer& initializer );
 	virtual void BeginPlay() override;
 	virtual void BeginDestroy() override;
+	void EndPlay(EEndPlayReason::Type reason);
 
 	/// <summary>
 	/// Loads checkpoint data from save file and sets values

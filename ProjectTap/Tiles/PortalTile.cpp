@@ -349,8 +349,8 @@ void APortalTile::PostEditChangeProperty( FPropertyChangedEvent & PropertyChange
 				otherPortal->otherPortal = this;
 				otherPortal->color = color;
 				otherPortal->SetColor();
+				otherPortal->velocityMultiplier = velocityMultiplier;
 			}
-			
 		}
 		else if ( pName.Equals( "color" ) )
 		{
@@ -359,6 +359,13 @@ void APortalTile::PostEditChangeProperty( FPropertyChangedEvent & PropertyChange
 			{
 				otherPortal->color = color;
 				otherPortal->SetColor();
+			}
+		}
+		else if (pName.Equals("velocityMultiplier"))
+		{
+			if (otherPortal != nullptr)
+			{
+				otherPortal->velocityMultiplier = velocityMultiplier;
 			}
 		}
 	}

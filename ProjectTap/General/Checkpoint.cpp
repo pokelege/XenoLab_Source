@@ -11,6 +11,7 @@ ACheckpoint::ACheckpoint()
 	enabled = true;
 
 	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("CheckpointCollider"));
+	Collider->SetWorldScale3D(FVector(20.0f, 20.0f, 20.0f));
 	Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Collider->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	Collider->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Overlap);
@@ -36,7 +37,8 @@ void ACheckpoint::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCompo
 			if (auto ball = Cast<ABallPawn>(OtherActor))
 				if (!ball->isDying())
 				{
-					ball->SaveCheckpointData(GetName(), Collider->GetComponentLocation());
+					ball->SaveCheckpointData(GetName(), Collider->GetComponentLocation(),
+						Direction, InitialSpeed);
 					enabled = false;
 				}
 				else
