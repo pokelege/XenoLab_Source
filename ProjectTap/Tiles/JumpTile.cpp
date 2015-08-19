@@ -3,6 +3,7 @@
 #include "ProjectTap.h"
 #include "JumpTile.h"
 #include "Pawns/BallPawn.h"
+#include "ProjectTapGameState.h"
 
 const FName AJumpTile::JUMP_MESH_PATH = FName("/Game/Models/Jump");
 
@@ -23,6 +24,7 @@ void AJumpTile::BeginPlay()
 		auto ydir = dir.Y >= 0 ? Direction::YPlus : Direction::yMinus;
 		rotationDirection = FMath::Abs( dir.X ) >= FMath::Abs( dir.Y ) ? xdir : ydir;
 	}
+
 	Super::BeginPlay();
 	if ( target != nullptr )
 	{
@@ -30,6 +32,8 @@ void AJumpTile::BeginPlay()
 		auto rot = (dir.Rotation().GetNormalized().Yaw - GetActorRotation().GetNormalized().Yaw) / 360;
 		material->SetScalarParameterValue( TEXT( "Rotation" ) , 1.0f - rot );
 	}
+	
+
 }
 
 void AJumpTile::Tick( float DeltaTime )
@@ -43,8 +47,29 @@ void AJumpTile::Tick( float DeltaTime )
 	}
 }
 
+void AJumpTile::StopWaitingForBall()
+{
+	isBallComing = false;
+	auto world = GetWorld();
+	auto state = Cast<AProjectTapGameState>(world->GetGameState());
+	auto ball = state->GetPlayer();
+	ball->ballHitDuringJumpDelegate.Unbind();
+}
+
+void AJumpTile::TargetStopWaitingForBall()
+{
+	if (target != nullptr)
+	{
+		target->StopWaitingForBall();
+	}
+}
+
 void AJumpTile::SetWaitForBall()
 {
+	auto world = GetWorld();
+	auto state = Cast<AProjectTapGameState>(world->GetGameState());
+	auto ball = state->GetPlayer();
+	ball->ballHitDuringJumpDelegate.BindUObject(this, &AJumpTile::StopWaitingForBall);
 	isBallComing = true;
 }
 
