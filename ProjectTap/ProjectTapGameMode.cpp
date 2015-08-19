@@ -54,7 +54,7 @@ void AProjectTapGameMode::StartPlay()
 		FVector spawnPosition;
 
 		if (saveData && saveData->Enabled)
-			spawnPosition = FVector(saveData->Position.X, saveData->Position.Y, saveData->Position.Z + 20.0f);
+			spawnPosition = FVector(saveData->Position.X, saveData->Position.Y, saveData->Position.Z + 52.0f);
 		else
 			spawnPosition = playerTransform.GetTranslation();
 			
@@ -72,7 +72,11 @@ void AProjectTapGameMode::StartPlay()
 
 			if ( ball != nullptr )
 			{
-				ball->AddVelocity( realPlayerStart->initialVelocity, spawnPosition );
+				if (saveData && saveData->Enabled)
+					ball->AddVelocity(saveData->Direction * saveData->InitialSpeed);
+				else
+					ball->AddVelocity(realPlayerStart->initialVelocity, spawnPosition);
+
 				if ( possibleCamera != nullptr && realPlayerStart->followPlayer )
 				{
 					FVector saveOffset = (saveData && saveData->Enabled) ? (spawnPosition - realPlayerStart->GetActorLocation()) : FVector::ZeroVector;
@@ -102,21 +106,17 @@ void AProjectTapGameMode::StartPlay()
 
 UCheckpointSave* AProjectTapGameMode::GetCheckpointData(UWorld* world)
 {
-	UE_LOG(LogTemp, Warning, TEXT("LOADING"));
 	UCheckpointSave* load = Cast<UCheckpointSave>(UGameplayStatics::CreateSaveGameObject(UCheckpointSave::StaticClass()));
 	load = Cast<UCheckpointSave>(UGameplayStatics::LoadGameFromSlot(load->SaveSlotName, load->UserIndex));
 
 	if (load && load->Enabled)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("LOAD FOUND"));
-		UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *load->CheckpointName);
-		UE_LOG(LogTemp, Warning, TEXT("Position: %s"), *load->Position.ToString());
-		UE_LOG(LogTemp, Warning, TEXT("Direction: %s"), *load->Direction.ToString());
-		UE_LOG(LogTemp, Warning, TEXT("Speed: %f"), load->Speed);
-
 		for (TActorIterator<ACheckpoint> ActorItr(world); ActorItr; ++ActorItr)
 			if (ActorItr->GetName() == load->CheckpointName)
+			{
 				ActorItr->enabled = false;
+				break;
+			}
 	}
 
 	return load;
@@ -126,7 +126,6 @@ bool AProjectTapGameMode::IsGodMode()
 {
 	return isGodMode;
 }
-
 
 void AProjectTapGameMode::BeginDestroy()
 {
@@ -139,6 +138,18 @@ void AProjectTapGameMode::BeginDestroy()
 		OnCameraChangedDelegateHandle.Reset();
 	}
 	Super::BeginDestroy();
+}
+
+void AProjectTapGameMode::EndPlay(EEndPlayReason::Type reason)
+{
+	switch (reason)
+	{
+	case EEndPlayReason::EndPlayInEditor:
+	case EEndPlayReason::Quit:
+		ACheckpoint::ClearSave();
+		UE_LOG(LogTemp, Warning, TEXT("SAVE CLEARED ON EXIT"));
+		break;
+	}
 }
 
 void AProjectTapGameMode::Respawn()

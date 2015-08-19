@@ -11,6 +11,7 @@ ACheckpoint::ACheckpoint()
 	enabled = true;
 
 	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("CheckpointCollider"));
+	Collider->SetWorldScale3D(FVector(20.0f, 20.0f, 20.0f));
 	Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Collider->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	Collider->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Overlap);
@@ -20,6 +21,8 @@ ACheckpoint::ACheckpoint()
 	Billboard = CreateDefaultSubobject<UMaterialBillboardComponent>(TEXT("CheckpointBillboard"));
 	Billboard->AttachTo(RootComponent);
 }
+
+void ACheckpoint::DisplaySave_Implementation() {}
 
 void ACheckpoint::ClearSave()
 {
@@ -36,7 +39,9 @@ void ACheckpoint::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCompo
 			if (auto ball = Cast<ABallPawn>(OtherActor))
 				if (!ball->isDying())
 				{
-					ball->SaveCheckpointData(GetName(), Collider->GetComponentLocation());
+					ball->SaveCheckpointData(GetName(), Collider->GetComponentLocation(),
+						Direction, InitialSpeed);
+					DisplaySave();
 					enabled = false;
 				}
 				else

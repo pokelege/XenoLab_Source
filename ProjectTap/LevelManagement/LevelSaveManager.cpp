@@ -98,7 +98,7 @@ FName ULevelSaveManager::LoadNextLevel()
 	LoadGameManager = Cast<ULevelSaveManager>(UGameplayStatics::LoadGameFromSlot("LEVEL_DATA", 0));
 	if (LoadGameManager == nullptr)
 	{
-		UGameplayStatics::OpenLevel(GetWorld(), "1-1");
+		return "0-0";
 	}
 	FString levelString = FString::FromInt(LoadGameManager->playerEpisode) + "-" + FString::FromInt(LoadGameManager->playerLevel);
 	return FName(*levelString);
