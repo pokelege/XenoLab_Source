@@ -20,13 +20,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CPP_Image)
 	class UMaterialBillboardComponent* Billboard = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = SaveData)
+	UPROPERTY(EditAnywhere, Category = CPP_SaveData)
 		FVector Direction = FVector(1.0f, 0.0f, 0.0f);
 
-	UPROPERTY(EditAnywhere, Category = SaveData)
+	UPROPERTY(EditAnywhere, Category = CPP_SaveData)
 		float InitialSpeed = 0.0f;
 	
 	ACheckpoint();
+
+	UFUNCTION(BlueprintNativeEvent, Category = CPP_SaveData)
+		void DisplaySave();
 
 	UFUNCTION(BlueprintCallable, Category = CPP_SaveData)
 		static void ClearSave();

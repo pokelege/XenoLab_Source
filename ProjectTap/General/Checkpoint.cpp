@@ -22,6 +22,8 @@ ACheckpoint::ACheckpoint()
 	Billboard->AttachTo(RootComponent);
 }
 
+void ACheckpoint::DisplaySave_Implementation() {}
+
 void ACheckpoint::ClearSave()
 {
 	UCheckpointSave* save = Cast<UCheckpointSave>(UGameplayStatics::CreateSaveGameObject(UCheckpointSave::StaticClass()));
@@ -39,6 +41,7 @@ void ACheckpoint::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCompo
 				{
 					ball->SaveCheckpointData(GetName(), Collider->GetComponentLocation(),
 						Direction, InitialSpeed);
+					DisplaySave();
 					enabled = false;
 				}
 				else
