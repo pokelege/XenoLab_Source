@@ -23,7 +23,7 @@ class PROJECTTAP_API APawnCastingTrigger : public AActor
 	class ABallPawn* currentPawn = nullptr;
 public:
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Ball )
-		UBoxComponent* tileOverlapCollision;
+	UBoxComponent* tileOverlapCollision;
 private:
 	bool canTrigger = true;
 	friend class ABallPawn;

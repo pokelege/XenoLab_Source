@@ -53,6 +53,8 @@ public:
 
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent) override;
+	virtual void EditorKeyPressed(FKey Key,
+		EInputEvent Event) override;
 #endif
 
 

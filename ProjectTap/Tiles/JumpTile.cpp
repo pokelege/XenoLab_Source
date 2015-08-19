@@ -3,6 +3,11 @@
 #include "ProjectTap.h"
 #include "JumpTile.h"
 #include "Pawns/BallPawn.h"
+#include "ProjectTapGameState.h"
+
+#if WITH_EDITOR
+#include "UnrealEd.h"
+#endif
 
 const FName AJumpTile::JUMP_MESH_PATH = FName("/Game/Models/Jump");
 
@@ -23,13 +28,14 @@ void AJumpTile::BeginPlay()
 		auto ydir = dir.Y >= 0 ? Direction::YPlus : Direction::yMinus;
 		rotationDirection = FMath::Abs( dir.X ) >= FMath::Abs( dir.Y ) ? xdir : ydir;
 	}
+
 	Super::BeginPlay();
 	if ( target != nullptr )
 	{
 		auto dir = ( target->GetActorLocation() - GetActorLocation() ).GetSafeNormal2D();
 		auto rot = (dir.Rotation().GetNormalized().Yaw - GetActorRotation().GetNormalized().Yaw) / 360;
 		material->SetScalarParameterValue( TEXT( "Rotation" ) , 1.0f - rot );
-	}
+	}	
 }
 
 void AJumpTile::Tick( float DeltaTime )
@@ -43,8 +49,29 @@ void AJumpTile::Tick( float DeltaTime )
 	}
 }
 
+void AJumpTile::StopWaitingForBall()
+{
+	isBallComing = false;
+	auto world = GetWorld();
+	auto state = Cast<AProjectTapGameState>(world->GetGameState());
+	auto ball = state->GetPlayer();
+	ball->ballHitDuringJumpDelegate.Unbind();
+}
+
+void AJumpTile::TargetStopWaitingForBall()
+{
+	if (target != nullptr)
+	{
+		target->StopWaitingForBall();
+	}
+}
+
 void AJumpTile::SetWaitForBall()
 {
+	auto world = GetWorld();
+	auto state = Cast<AProjectTapGameState>(world->GetGameState());
+	auto ball = state->GetPlayer();
+	ball->ballHitDuringJumpDelegate.BindUObject(this, &AJumpTile::StopWaitingForBall);
 	isBallComing = true;
 }
 
@@ -172,6 +199,26 @@ void AJumpTile::PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEv
 			if (target != nullptr)
 			{
 				target->height = height;
+				target->target = this;
+			}
+		}
+	}
+}
+
+void AJumpTile::EditorKeyPressed(FKey Key, EInputEvent Event)
+{
+	Super::EditorKeyPressed(Key, Event);
+
+	if (Key == EKeys::Enter && Event == EInputEvent::IE_Released)
+	{
+		auto itr = GEditor->GetSelectedActorIterator();
+		for (; *itr != nullptr; ++itr)
+		{
+			bool isJump = (*itr)->IsA(AJumpTile::StaticClass());
+			bool isThis = *itr == this;
+			if (isJump && !isThis)
+			{
+				target = Cast<AJumpTile>(*itr);
 				target->target = this;
 			}
 		}

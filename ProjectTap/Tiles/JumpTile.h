@@ -12,10 +12,15 @@ UCLASS()
 class PROJECTTAP_API AJumpTile : public ABaseRampTile
 {
 	GENERATED_BODY()
-
+	
 	static const FName JUMP_MESH_PATH;
 	FVector jumpVelocity;
 	bool isBallComing = false;
+
+	UFUNCTION()
+	void StopWaitingForBall();
+	UFUNCTION()
+	void TargetStopWaitingForBall();
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Jump)
@@ -31,6 +36,9 @@ public:
 
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent) override;
+
+	virtual void EditorKeyPressed(FKey Key,
+		EInputEvent Event) override;
 #endif
 
 	bool IsWaitingForBall();

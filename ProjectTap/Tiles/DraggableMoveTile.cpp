@@ -5,6 +5,7 @@
 #include "DataStructure/GVertex.h"
 #include "DataStructure/Graph.h"
 #include "Classes/Particles/ParticleEmitter.h"
+#include "BaseRampTile.h"
 //#include <cassert>
 
 ADraggableMoveTile::ADraggableMoveTile()
@@ -40,27 +41,33 @@ void ADraggableMoveTile::BeginPlay()
 
 void ADraggableMoveTile::Initialize()
 {
-	if (currentVertex != nullptr)
-	{
-		auto newLocation = currentVertex->GetActorLocation();
-		newLocation.Z += dragTileverticalOffset;
-		SetActorLocation(newLocation);
-		currentVertex->SetOccupied(true);
-	}
-
 	if (carryOn != nullptr)
 	{
 		if (auto actor = Cast<ICarriable>(carryOn))
 		{
 			auto scale = actor->getOffsetInfo().scaleForCollision;
 			auto offset = actor->getOffsetInfo().offsetForCollision;
+			dragTileverticalOffset += actor->getOffsetInfo().offsetForParent.Z;
 			BoxCollision->SetRelativeScale3D(scale);
 			BoxCollision->AddLocalOffset(offset);
 		}
+
+		if (carryOn->IsA(ABaseRampTile::StaticClass()))
+		{
+			BoxCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+		}
 	}
-	else
+	else 
 	{
 		BoxCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+	}
+
+	if (currentVertex != nullptr)
+	{
+		auto newLocation = currentVertex->GetActorLocation();
+		newLocation.Z += dragTileverticalOffset;
+		SetActorLocation(newLocation);
+		currentVertex->SetOccupied(true);
 	}
 
 	resetIndicator();
@@ -276,12 +283,11 @@ void ADraggableMoveTile::UpdateDragMove(float dt)
 		auto reachedPos = FVector::DotProduct(currDir, moveDir) < 0.0f;
 
 		if (reachedPos || reachGoalNextFrame)
-		{
+		{			
 			SetActorLocation(newGoalPos);
 			isMoving = false;
 			reachGoalNextFrame = false;
 			resetIndicator();
-
 		}
 		else if (moveDir.SizeSquared() > 0.1f)
 		{
