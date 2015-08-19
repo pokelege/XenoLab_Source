@@ -7,6 +7,9 @@
 #include "Pawns/PawnCastingTrigger.h"
 #include "MagnetTile.h"
 #include "ProjectTapGameMode.h"
+#if WITH_EDITOR
+#include "UnrealEd.h"
+#endif
 
 const GroundableInfo APortalTile::groundableInfo = GroundableInfo( FVector( 0 , 0 , 40 ) , true );
 APortalTile::APortalTile()
@@ -370,5 +373,25 @@ void APortalTile::PostEditChangeProperty( FPropertyChangedEvent & PropertyChange
 		}
 	}
 
+}
+
+void APortalTile::EditorKeyPressed(FKey Key, EInputEvent Event)
+{
+	Super::EditorKeyPressed(Key, Event);
+
+	if (Key == EKeys::Enter && Event == EInputEvent::IE_Released)
+	{
+		auto itr = GEditor->GetSelectedActorIterator();
+		for (; *itr != nullptr; ++itr)
+		{
+			bool isPortal = (*itr)->IsA(APortalTile::StaticClass());
+			bool isThis = *itr == this;
+			if (isPortal && !isThis)
+			{
+				otherPortal = Cast<APortalTile>(*itr);
+				otherPortal->otherPortal = this;
+			}
+		}
+	}
 }
 #endif
