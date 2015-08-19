@@ -14,6 +14,7 @@
 #include "Tiles/DeflectiveTile.h"
 #include "Tiles/BlockingTileBase.h"
 #include "ProjectTapGameMode.h"
+#include "General/Checkpoint.h"
 #include "General/CheckpointSave.h"
 
 
@@ -138,7 +139,6 @@ bool ABallPawn::IsTransitioningByDeflectiveTile()
 {
 	return bDeflectiveTransition;
 }
-
 
 // Called every frame
 void ABallPawn::Tick( float DeltaTime )
@@ -421,17 +421,13 @@ void ABallPawn::ResetBallXYPosition( const FVector& position )
 	SetActorLocation( newPosition );
 }
 
-void ABallPawn::SaveCheckpointData(FString name, FVector position, float restartSpeed)
+void ABallPawn::SaveCheckpointData(FString name, FVector position, FVector direction, float speed)
 {
-	UE_LOG(LogTemp, Warning, TEXT("SAVING"));
-	UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *name);
-	UE_LOG(LogTemp, Warning, TEXT("Position: %s"), *position.ToString());
-	UE_LOG(LogTemp, Warning, TEXT("Speed: %f"), restartSpeed);
 	UCheckpointSave* save = Cast<UCheckpointSave>(UGameplayStatics::CreateSaveGameObject(UCheckpointSave::StaticClass()));
 	save->CheckpointName = name;
 	save->Position = position;
-	save->Direction = FVector(0, 0, 0);
-	save->Speed = restartSpeed;
+	save->Direction = direction;
+	save->InitialSpeed = speed;
 	save->Enabled = true;
 	UGameplayStatics::SaveGameToSlot(save, save->SaveSlotName, save->UserIndex);
 }

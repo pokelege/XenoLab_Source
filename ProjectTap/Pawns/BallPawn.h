@@ -107,6 +107,7 @@ public:
 	void ResetBallXYPosition(const FVector& position);
 
 	bool IsTransitioningByDeflectiveTile();
+
 	/// <summary>
 	/// Saves checkpoint variables upon contact
 	/// Variables will be saved out and reloaded on level reset when spawning pawn
@@ -114,7 +115,7 @@ public:
 	/// position: Position of respawn for checkpoint
 	/// restartSpeed: Starting velocity in the same direction the checkpoint was reached
 	/// </summary>
-	void SaveCheckpointData(FString name, FVector position, float restartSpeed = 0.0f);
+	void SaveCheckpointData(FString name, FVector position, FVector direction, float speed);
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
