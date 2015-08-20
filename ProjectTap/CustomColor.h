@@ -6,13 +6,14 @@
 UENUM( CustomColor )
 enum class CustomColor : uint8
 {
-	Tomato = 0 ,
-	LawnGreen = 1,
-	FireBrick = 2,
-	CornflowerBlue = 3,
-	HotPink = 4,
-	PapayaWhip = 5,
-	Amethyst = 6
+	None = 0,
+	Tomato = 1 ,
+	LawnGreen = 2,
+	FireBrick = 3,
+	CornflowerBlue = 4,
+	HotPink = 5,
+	PapayaWhip = 6,
+	Amethyst = 7
 };
 
 struct ColorHelpers

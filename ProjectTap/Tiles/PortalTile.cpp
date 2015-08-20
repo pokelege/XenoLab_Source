@@ -328,8 +328,8 @@ void APortalTile::SetColor()
 {
 	if (material != nullptr)
 	{
-		material->SetVectorParameterValue(TEXT("BaseColor"), ColorHelpers::GetColorFromEnum(color));
-		material->SetVectorParameterValue(TEXT("BaseColorHighlighted"), ColorHelpers::GetColorFromEnum(color));
+		material->SetVectorParameterValue(TEXT("BaseColor"), color == CustomColor::None ? FVector(customColor) : ColorHelpers::GetColorFromEnum(color));
+		material->SetVectorParameterValue(TEXT("BaseColorHighlighted"), color == CustomColor::None ? FVector(customColor) : ColorHelpers::GetColorFromEnum(color));
 	}
 }
 
@@ -355,12 +355,13 @@ void APortalTile::PostEditChangeProperty( FPropertyChangedEvent & PropertyChange
 				otherPortal->velocityMultiplier = velocityMultiplier;
 			}
 		}
-		else if ( pName.Equals( "color" ) )
+		else if ( pName.Equals( "color" ) || pName.Equals("customColor"))
 		{
 			SetColor();
 			if ( otherPortal != nullptr )
 			{
 				otherPortal->color = color;
+				otherPortal->customColor = customColor;
 				otherPortal->SetColor();
 			}
 		}
