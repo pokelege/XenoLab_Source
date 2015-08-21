@@ -25,7 +25,9 @@ FVector ColorHelpers::GetColorFromEnum(const CustomColor color)
 		return PapayaWhip;
 	case(CustomColor::Amethyst) :
 		return Amethyst;
-	default:
+	case(CustomColor::Tomato) :
 		return Tomato;
+	default:
+		return FVector::ZeroVector;
 	}
 }

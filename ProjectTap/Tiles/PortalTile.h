@@ -22,6 +22,9 @@ private:
 	TScriptDelegate<FWeakObjectPtr> beginOrangeOverlap;
 	TScriptDelegate<FWeakObjectPtr> endOrangeOverlap;
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Portal)
+	FLinearColor customColor;
+
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Portal )
 		APortalTile* otherPortal = nullptr;
 
@@ -38,6 +41,7 @@ public:
 		float velocityMultiplier = 1.0f;
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Portal )
 		CustomColor color = CustomColor::Tomato;
+
 private:
 	bool leftBluePortal = false;
 	bool leftOrangePortal = false;
