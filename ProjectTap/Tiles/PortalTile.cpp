@@ -69,9 +69,9 @@ void APortalTile::AdjustOrientationAndTriggerBoxes()
 	bluePortalTrigger->SetRelativeLocation( FVector( -5.0f , 0.f , 0.f ) );
 	orangePortalTrigger->SetRelativeLocation( FVector( 5.f , 0.f , 0.f ) );
 
-	bluePortalTrigger->SetBoxExtent( FVector( 3.f , 25.f , 30.f ) );
+	bluePortalTrigger->SetBoxExtent( FVector( 3.f , 35.f , 35.f ) );
 
-	orangePortalTrigger->SetBoxExtent( FVector( 3.f , 25.f , 30.f ) );
+	orangePortalTrigger->SetBoxExtent( FVector( 3.f , 35.f , 35.f ) );
 
 	orangePortalTrigger->SetCollisionResponseToAllChannels( ECR_Ignore );
 	orangePortalTrigger->SetCollisionEnabled( ECollisionEnabled::QueryOnly );

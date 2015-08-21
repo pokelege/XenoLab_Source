@@ -89,22 +89,6 @@ void ALaser::SetLaserDepth(unsigned i)
 	currentDepth = i;
 }
 
-void ALaser::PostSpawnInitialize
-(
-FVector const & SpawnLocation,
-FRotator const & SpawnRotation,
-AActor * InOwner,
-APawn * InInstigator,
-bool bRemoteOwned,
-bool bNoFail,
-bool bDeferConstruction
-)
-{
-	Super::PostSpawnInitialize(SpawnLocation, SpawnRotation, InOwner, InInstigator, bRemoteOwned, bNoFail, bDeferConstruction);
-	laserParticle->EmitterInstances[0]->SetBeamSourcePoint(GetActorLocation(), 0);
-	laserParticle->EmitterInstances[0]->SetBeamTargetPoint(GetActorLocation(), 0);
-}
-
 // Called every frame
 void ALaser::Tick( float DeltaTime )
 {
@@ -167,8 +151,6 @@ void ALaser::checkLaserCollisions(float dt)
 				tile->frameCollisionsComponent->GetChildrenComponents(true, Children);
 				for(int i = 0; i < Children.Num() && typeFound ; ++i)
 				{
-//					printonscreen(hit.Component.Get()->GetName());
-//					printonscreen(Children[i]->GetName());
 					if(hit.Component.Get() == Children[i])
 					{
 						typeFound = false;
@@ -237,7 +219,7 @@ void ALaser::checkLaserCollisions(float dt)
 				portal->GetLaserPortalTransportedLocation(hit.GetComponent(), nextLaser->dir, newSourcePos);
 				nextLaser->SetActorLocation(newSourcePos);
 				nextLaser->laserParticle->EmitterInstances[0]->SetBeamSourcePoint(newSourcePos, 0);
-				nextLaser->laserParticle->EmitterInstances[0]->SetBeamTargetPoint(newSourcePos + nextLaser->dir * length, 0);
+				nextLaser->laserParticle->EmitterInstances[0]->SetBeamTargetPoint(newSourcePos, 0);
 			}
 
 			bool notHitDeflectiveTile = tile == nullptr || isFrame;
@@ -272,6 +254,8 @@ void ALaser::checkLaserCollisions(float dt)
 	{
 		mesh->SetWorldRotation(dir.Rotation());
 	}
+
+	length = 99999.0f;
 }
 
 void ALaser::SpawnSubLaser(const FVector& start, const FVector& normal)
@@ -284,9 +268,9 @@ void ALaser::SpawnSubLaser(const FVector& start, const FVector& normal)
 	nextLaser->SetLaserDepth(currentDepth + 1);
 	nextLaser->mesh->SetHiddenInGame(true);
 	nextLaser->dir = newDir;
-	nextLaser->length = length;
-	nextLaser->laserParticle->EmitterInstances[0]->SetBeamSourcePoint(nextLaser->GetActorLocation(), 0);
-	nextLaser->laserParticle->EmitterInstances[0]->SetBeamTargetPoint(nextLaser->GetActorLocation(), 0);
+	nextLaser->length = .0f;
+	nextLaser->laserParticle->EmitterInstances[0]->SetBeamSourcePoint(start, 0);
+	nextLaser->laserParticle->EmitterInstances[0]->SetBeamTargetPoint(start, 0);
 }
 
 FVector ALaser::reflect(const FVector& v1, const FVector& v2)
@@ -306,8 +290,6 @@ void ALaser::KillSubLaser()
 {
 	if (nextLaser != nullptr)
 	{
-		//laserParticle->EmitterInstances[0]->SetBeamSourcePoint(GetActorLocation(), 0);
-		//laserParticle->EmitterInstances[0]->SetBeamTargetPoint(GetActorLocation(), 0);;
 		nextLaser->KillSubLaser();
 		nextLaser->Destroy();
 		nextLaser = nullptr;
