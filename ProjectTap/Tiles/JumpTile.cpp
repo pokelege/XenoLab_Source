@@ -4,6 +4,7 @@
 #include "JumpTile.h"
 #include "Pawns/BallPawn.h"
 #include "ProjectTapGameState.h"
+#include "DeflectiveTile.h"
 
 #if WITH_EDITOR
 #include "UnrealEd.h"
@@ -156,8 +157,11 @@ void AJumpTile::HighlightTile()
 		target->Super::HighlightTile();
 		if (isBallComing)
 		{
-			auto newDir = (GetActorLocation() - target->GetActorLocation()).GetSafeNormal();
-			ball->AddVelocity(newDir * ballLandingForceStrength, true);
+			auto newDir = ADeflectiveTile::clampShortAxis(GetActorLocation() - target->GetActorLocation()).GetSafeNormal();
+			auto newVelDir = newDir * ballLandingForceStrength;
+			ball->AddVelocity(newVelDir, true);
+			ball->TransitionBallToProperLocationFromRamp(GetActorLocation(), newVelDir);
+
 		}
 	}
 }
