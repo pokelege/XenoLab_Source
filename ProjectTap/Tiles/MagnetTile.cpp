@@ -136,12 +136,20 @@ void AMagnetTile::UpdateBallPawnSearch( AActor* actor )
 void AMagnetTile::UpdatePortalSearch( AActor* actor , const FHitResult& hit )
 {
 	auto portal = Cast<APortalTile>( actor );
-	if ( portal != nullptr && CanSpawnSubMagnet() )
+	if ( portal != nullptr)
 	{
 		auto hitPortalTrigger = hit.GetComponent();
 		FVector subMagnetTileDir , subMagnetTilePos;
 		portal->GetMagnetPortalTransportedLocation( hitPortalTrigger , subMagnetTileDir , subMagnetTilePos );
-		SpawnSubMagnet( subMagnetTilePos , subMagnetTileDir );
+
+		if (CanSpawnSubMagnet())
+		{
+			SpawnSubMagnet(subMagnetTilePos, subMagnetTileDir);
+		}
+		else if (subMagnet != nullptr)
+		{
+			subMagnet->SetActorLocation(subMagnetTilePos);
+		}
 	}
 }
 
