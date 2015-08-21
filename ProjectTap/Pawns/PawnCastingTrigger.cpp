@@ -79,6 +79,7 @@ void APawnCastingTrigger::OnBeginTriggerOverlap(AActor* OtherActor,
 			ramp->ball = currentPawn;
 			ramp->Enable();
 			ramp->HighlightTile();
+			ramp->TouchBall();
 		}
 
 		if (ramp == nullptr)
@@ -117,7 +118,9 @@ void APawnCastingTrigger::OnEndTriggerOverlap(AActor* OtherActor,
 		{
 			ramp->CancelHighlight();
 			ramp->Disable();
-			ramp->ball = nullptr;			
+			ramp->ball = nullptr;		
+			ramp->NotTouchBall();
+
 		}
 	}
 

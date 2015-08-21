@@ -33,6 +33,7 @@ protected:
 	class ABallPawn* ball = nullptr;
 	class ABallPawn* lastPauseBall = nullptr;
 	USceneComponent* offset =nullptr;
+	bool isBallTouching = false;
 
 	void ResetMeshOrientation();
 public:
@@ -57,6 +58,8 @@ public:
 	virtual void CancelHighlightEdge() override;
 	virtual void HighlightTile() override;
 	virtual void CancelHighlightTile() override;
+	void TouchBall();
+	void NotTouchBall();
 	UFUNCTION()
 		virtual void OnGameStateChanged( const CustomGameState gameState ) override;
 

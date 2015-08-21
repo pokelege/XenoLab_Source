@@ -38,6 +38,16 @@ ABaseRampTile::ABaseRampTile() : ATile()
 	Disable();
 }
 
+void ABaseRampTile::TouchBall()
+{
+	isBallTouching = true;
+}
+
+void ABaseRampTile::NotTouchBall()
+{
+	isBallTouching = false;
+}
+
 const GroundableInfo* ABaseRampTile::GetGroundableInfo() const
 {
 	return &ABaseRampTile::groundableInfo;
@@ -135,7 +145,7 @@ void ABaseRampTile::HighlightTile()
 
 void ABaseRampTile::CancelHighlightTile()
 {
-	if(material != nullptr)
+	if (material != nullptr)
 	{
 		material->SetScalarParameterValue("LerpBaseColorHighlighted", 0);
 	}
