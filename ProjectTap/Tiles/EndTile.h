@@ -23,6 +23,7 @@ private:
 	TArray<USoundBase*> sounds;
 	UAudioComponent* audioPlayer = nullptr;
 	UCurveFloat* soundToPlayCurve = nullptr;
+	UParticleSystemComponent* particleComponent = nullptr;
 public:
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Transport )
 		UCurveVector* ballToSocketCurve = nullptr;

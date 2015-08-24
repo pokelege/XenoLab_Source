@@ -18,7 +18,7 @@ AEndTile::AEndTile() : ATile()
 		BoxCollision->SetBoxExtent( FVector( 40 , 40 , 80 ) , false );
 	}
 
-	auto particleComponent = CreateDefaultSubobject<UParticleSystemComponent>( TEXT( "Particle" ) );
+	particleComponent = CreateDefaultSubobject<UParticleSystemComponent>( TEXT( "Particle" ) );
 	ConstructorHelpers::FObjectFinder<UParticleSystem> particle( TEXT( "/Game/Particles/P_EndTile" ) );
 	particleComponent->SetTemplate( particle.Object );
 	particleComponent->AttachTo( BoxCollision );
@@ -121,6 +121,20 @@ void AEndTile::Tick(float DeltaTime)
 	{
 		PlayTransport(DeltaTime);
 	}
+	static float letime = 0;
+	letime += DeltaTime;
+	FVector location = FRotator(0, letime * 500, 0).Quaternion() * FVector(35, 0, 0);
+	FVector location2 = FRotator(0, -letime * 500, 0).Quaternion() * FVector(35, 0, 0);
+	particleComponent->SetVectorParameter
+		(
+			TEXT("Location"),
+			location
+			);
+	particleComponent->SetVectorParameter
+		(
+			TEXT("Location2"),
+			location2
+			);
 }
 
 void AEndTile::OnGameStateChanged( const CustomGameState gameState )
