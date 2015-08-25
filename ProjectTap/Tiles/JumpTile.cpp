@@ -116,7 +116,7 @@ void AJumpTile::calculateImpulse()
 	//vi = -at
 	float verticalVelocity = -GetWorld()->GetGravityZ() * t_up;
 	auto dir = (target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-
+	
 	auto startPos = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z);
 	auto targetPos = FVector(target->GetActorLocation().X, target->GetActorLocation().Y, target->GetActorLocation().Z);
 	auto distance = FVector::Dist(targetPos, startPos);
@@ -157,7 +157,9 @@ void AJumpTile::HighlightTile()
 		target->Super::HighlightTile();
 		if (isBallComing)
 		{
-			auto newDir = ADeflectiveTile::clampShortAxis(GetActorLocation() - target->GetActorLocation()).GetSafeNormal();
+			auto newDir = GetActorLocation() - target->GetActorLocation();
+			newDir.Z = .0f;
+			newDir = ADeflectiveTile::clampShortAxis(newDir).GetSafeNormal();
 			auto newVelDir = newDir * ballLandingForceStrength;
 			ball->AddVelocity(newVelDir, true);
 			ball->TransitionBallToProperLocationFromRamp(GetActorLocation(), newVelDir);
