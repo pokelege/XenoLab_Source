@@ -18,35 +18,60 @@ AJumpTile::AJumpTile() : ABaseRampTile()
 	ConstructorHelpers::FObjectFinder<UStaticMesh> mesh(*JUMP_MESH_PATH.ToString());
 	TileMesh->SetStaticMesh(mesh.Object);
 	rotationDirection = Direction::Guess;
+	baseColor = FLinearColor(0.500000f, 0.500000f, 0.500000f, 1.000000f);
+	baseColorHighlighted = FLinearColor(0, 0, 0, 1);
+	glowColor = FLinearColor(1.000000, 0, 0, 1);
+	glowColorHighlighted = FLinearColor(0, 1, 0, 1);
+	if (material == nullptr) material = TileMesh == nullptr ? nullptr : TileMesh->CreateDynamicMaterialInstance(0);
+	SetColor();
+}
+
+void AJumpTile::SetColor()
+{
+	if (material != nullptr)
+	{
+		material->SetVectorParameterValue(TEXT("BaseColor"), baseColor);
+		material->SetVectorParameterValue(TEXT("BaseColorHighlighted"), baseColorHighlighted);
+		material->SetVectorParameterValue(TEXT("EdgeColor"), glowColor);
+		material->SetVectorParameterValue(TEXT("EdgeColorHighlighted"), glowColorHighlighted);
+	}
+}
+
+void AJumpTile::PostLoad()
+{
+	Super::PostLoad();
+	SetColor();
 }
 
 void AJumpTile::BeginPlay()
 {
-	if ( target != nullptr && rotationDirection == Direction::Guess )
+	if (target != nullptr && rotationDirection == Direction::Guess)
 	{
-		auto dir = ( target->GetActorLocation() - GetActorLocation() ).GetSafeNormal2D();
+		auto dir = (target->GetActorLocation() - GetActorLocation()).GetSafeNormal2D();
 		auto xdir = dir.X >= 0 ? Direction::XPlus : Direction::xMinus;
 		auto ydir = dir.Y >= 0 ? Direction::YPlus : Direction::yMinus;
-		rotationDirection = FMath::Abs( dir.X ) >= FMath::Abs( dir.Y ) ? xdir : ydir;
+		rotationDirection = FMath::Abs(dir.X) >= FMath::Abs(dir.Y) ? xdir : ydir;
 	}
 
 	Super::BeginPlay();
-	if ( target != nullptr )
+	if (target != nullptr)
 	{
-		auto dir = ( target->GetActorLocation() - GetActorLocation() ).GetSafeNormal2D();
+		auto dir = (target->GetActorLocation() - GetActorLocation()).GetSafeNormal2D();
 		auto rot = (dir.Rotation().GetNormalized().Yaw - GetActorRotation().GetNormalized().Yaw) / 360;
-		material->SetScalarParameterValue( TEXT( "Rotation" ) , 1.0f - rot );
-	}	
+		material->SetScalarParameterValue(TEXT("Rotation"), 1.0f - rot);
+	}
+	if (material == nullptr) material = TileMesh == nullptr ? nullptr : TileMesh->CreateDynamicMaterialInstance(0);
+	SetColor();
 }
 
-void AJumpTile::Tick( float DeltaTime )
+void AJumpTile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if ( target != nullptr )
+	if (target != nullptr)
 	{
-		auto dir = ( target->GetActorLocation() - GetActorLocation() ).GetSafeNormal2D();
-		auto rot = ( dir.Rotation().GetNormalized().Yaw - GetActorRotation().GetNormalized().Yaw ) / 360;
-		material->SetScalarParameterValue( TEXT( "Rotation" ) , 1.0f - rot );
+		auto dir = (target->GetActorLocation() - GetActorLocation()).GetSafeNormal2D();
+		auto rot = (dir.Rotation().GetNormalized().Yaw - GetActorRotation().GetNormalized().Yaw) / 360;
+		material->SetScalarParameterValue(TEXT("Rotation"), 1.0f - rot);
 	}
 }
 
@@ -84,7 +109,7 @@ bool AJumpTile::IsWaitingForBall()
 
 void AJumpTile::activate()
 {
-	if(rotationSequence == nullptr || target == nullptr || ball == nullptr || !IsEnabled() || activated) return;
+	if (rotationSequence == nullptr || target == nullptr || ball == nullptr || !IsEnabled() || activated) return;
 	Super::activate();
 	auto dir = (target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
@@ -135,7 +160,7 @@ void AJumpTile::calculateImpulse()
 void AJumpTile::HighlightEdge()
 {
 	Super::HighlightEdge();
-	if ( target != nullptr )
+	if (target != nullptr)
 	{
 		target->Super::HighlightEdge();
 	}
@@ -144,7 +169,7 @@ void AJumpTile::HighlightEdge()
 void AJumpTile::CancelHighlightEdge()
 {
 	Super::CancelHighlightEdge();
-	if ( target != nullptr )
+	if (target != nullptr)
 	{
 		target->Super::CancelHighlightEdge();
 	}
@@ -153,7 +178,7 @@ void AJumpTile::CancelHighlightEdge()
 void AJumpTile::HighlightTile()
 {
 	Super::HighlightTile();
-	if ( target != nullptr )
+	if (target != nullptr)
 	{
 		target->Super::HighlightTile();
 		if (isBallComing)
@@ -172,7 +197,7 @@ void AJumpTile::HighlightTile()
 void AJumpTile::CancelHighlightTile()
 {
 	Super::CancelHighlightTile();
-	if ( target != nullptr )
+	if (target != nullptr)
 	{
 		target->Super::CancelHighlightTile();
 	}
@@ -193,7 +218,7 @@ void AJumpTile::PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEv
 	if (PropertyChangedEvent.Property != nullptr)
 	{
 		auto p = PropertyChangedEvent.Property;
-		auto pName = p->GetName();
+		auto pName = p->GetNameCPP();
 
 		//when currentEditorPathIndex property changes in editor
 		//reset current moving tile's location to desinated node's location
@@ -206,7 +231,27 @@ void AJumpTile::PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEv
 			if (target != nullptr)
 			{
 				target->height = height;
+				target->baseColor = baseColor;
+				target->baseColorHighlighted = baseColorHighlighted;
+				target->glowColor = glowColor;
+				target->glowColorHighlighted = glowColorHighlighted;
 				target->target = this;
+				target->SetColor();
+			}
+		}
+		else if (pName.Equals("baseColor") ||
+			pName.Equals("baseColorHighlighted") ||
+			pName.Equals("glowColor") ||
+			pName.Equals("glowColorHighlighted") )
+		{
+			SetColor();
+			if (target != nullptr)
+			{
+				target->baseColor = baseColor;
+				target->baseColorHighlighted = baseColorHighlighted;
+				target->glowColor = glowColor;
+				target->glowColorHighlighted = glowColorHighlighted;
+				target->SetColor();
 			}
 		}
 	}
