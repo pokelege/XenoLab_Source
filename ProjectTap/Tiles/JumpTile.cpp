@@ -88,7 +88,8 @@ void AJumpTile::activate()
 	Super::activate();
 	auto dir = (target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
-	ball->TransitionBallToProperLocationFromRamp(GetActorLocation(), dir);
+	//ball->TransitionBallToProperLocationFromRamp(GetActorLocation(), dir);
+	ball->SetActorLocation(GetActorLocation());
 	target->SetWaitForBall();
 
 	calculateImpulse();
