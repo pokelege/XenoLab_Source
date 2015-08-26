@@ -28,11 +28,11 @@ ATurretPawn::ATurretPawn()
 	collisionBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	collisionBox->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	collisionBox->SetNotifyRigidBodyCollision(true);
-	collisionBox->SetMobility(EComponentMobility::Static);
+	//collisionBox->SetMobility(EComponentMobility::Static);
 	baseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret base mesh"));
 	baseMesh->SetStaticMesh(baseMeshSource.Object);
+	//baseMesh->SetMobility(EComponentMobility::Static);
 	baseMesh->AttachTo(collisionBox);
-	baseMesh->SetMobility(EComponentMobility::Static);
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> gunMesh(*GUN_MESH.ToString());
 	TurretGunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret gun mesh"));
