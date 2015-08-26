@@ -40,7 +40,8 @@ public:
 	virtual void EditorKeyPressed(FKey Key,
 		EInputEvent Event) override;
 #endif
-
+	virtual void PostLoad() override;
+	void SetColor();
 	bool IsWaitingForBall();
 
 	void SetWaitForBall();
