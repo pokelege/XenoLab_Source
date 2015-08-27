@@ -184,12 +184,11 @@ bool AProjectTapGameMode::LoadNextLevel()
 	FString lStr;
 	FString rStr;
 	levelStr.Split("-", &lStr, &rStr, ESearchCase::Type::IgnoreCase, ESearchDir::FromStart);
-
 	int32 episodeNum = FCString::Atoi(*lStr);
 	int32 levelNum = FCString::Atoi(*rStr);
 
 	// only saves if the next level is after the currently saved level
-	if (lastEpisode <= episodeNum && lastLevel <= levelNum)
+	if (lastEpisode < episodeNum || (lastEpisode == episodeNum && lastLevel < levelNum))
 	{
 		ULevelSaveManager* SaveLevelManager = Cast<ULevelSaveManager>(UGameplayStatics::CreateSaveGameObject(ULevelSaveManager::StaticClass()));
 		SaveLevelManager->playerEpisode = episodeNum;
