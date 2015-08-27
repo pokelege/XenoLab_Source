@@ -8,7 +8,7 @@
 #include "TurretPawn.generated.h"
 
 UCLASS()
-class PROJECTTAP_API ATurretPawn : public APawn, public IGroundable, public ICarriable
+class PROJECTTAP_API ATurretPawn : public AActor, public IGroundable, public ICarriable
 {
 	GENERATED_BODY()
 
@@ -69,9 +69,6 @@ public:
 
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
 	bool FoundPlayerToHit();
 

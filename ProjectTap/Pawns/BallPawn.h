@@ -22,6 +22,7 @@ class PROJECTTAP_API ABallPawn : public APawn
 	void SpawnCastingTrigger(BallCastType type);
 private:
 	friend class ADeflectiveTile;
+	friend class ATurretPawn;
 	FVector currentNormal;
 public:
 
@@ -142,6 +143,4 @@ public:
 
 	void setCamera(class ABallPlayerStart* playerStart, const FVector* extraPosition = nullptr);
 	UProjectTapCameraComponent* GetCamera();
-
-
 };

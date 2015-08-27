@@ -28,10 +28,11 @@ ATurretPawn::ATurretPawn()
 	collisionBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	collisionBox->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	collisionBox->SetNotifyRigidBodyCollision(true);
+	//collisionBox->SetMobility(EComponentMobility::Static);
 	baseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret base mesh"));
 	baseMesh->SetStaticMesh(baseMeshSource.Object);
+	//baseMesh->SetMobility(EComponentMobility::Static);
 	baseMesh->AttachTo(collisionBox);
-	baseMesh->SetMobility(EComponentMobility::Static);
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> gunMesh(*GUN_MESH.ToString());
 	TurretGunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret gun mesh"));
@@ -125,7 +126,7 @@ bool ATurretPawn::FoundPlayerToHit()
 		hit = FHitResult();
 		GetWorld()->LineTraceSingleByObjectType(hit, rayStart, pos + laserVector, objectParam, queryParam);
 	}
-	return Cast<ABallPawn>(hit.GetActor()) != nullptr && !Cast<ABallPawn>(hit.GetActor())->isDying();
+	return Cast<ABallPawn>(hit.GetActor()) != nullptr && !Cast<ABallPawn>(hit.GetActor())->isDying() && !Cast<ABallPawn>(hit.GetActor())->bInvincible;
 }
 
 void ATurretPawn::Fire()
@@ -223,12 +224,6 @@ void ATurretPawn::Tick(float DeltaTime)
 		}
 	}
 	UpdateLaserTag(DeltaTime);
-}
-
-// Called to bind functionality to input
-void ATurretPawn::SetupPlayerInputComponent(class UInputComponent* InputComponent)
-{
-	Super::SetupPlayerInputComponent(InputComponent);
 }
 
 void ATurretPawn::UpdateLaserTag(float dt)
