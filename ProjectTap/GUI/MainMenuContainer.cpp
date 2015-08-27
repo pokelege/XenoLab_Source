@@ -296,25 +296,25 @@ FIntPoint AMainMenuContainer::getResolutionByString(const FString& screen)
 {
 	FIntPoint point(1920, 1080);
 
-	if (screen.Equals("1920X1080f"))
+	if (screen.Equals("1920X1080"))
 	{
 		point = FIntPoint(1920, 1080);
 	}
-	else if (screen.Equals("1600X900f"))
+	else if (screen.Equals("1600X900"))
 	{
 		point = FIntPoint(1600, 900);
 	}
-	else if (screen.Equals("1366X768f"))
+	else if (screen.Equals("1366X768"))
 	{
 		point = FIntPoint(1366, 768);
 
 	}
-	else if (screen.Equals("1280X720f"))
+	else if (screen.Equals("1280X720"))
 	{
 		point = FIntPoint(1280, 720);
 
 	}
-	else if (screen.Equals("1024X576f"))
+	else if (screen.Equals("1024X576"))
 	{
 		point = FIntPoint(1024, 576);
 	}
