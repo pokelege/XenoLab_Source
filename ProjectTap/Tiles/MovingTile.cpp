@@ -31,18 +31,15 @@ AMovingTile::AMovingTile()
 
 }
 
-// Called when the game starts or when spawned
-void AMovingTile::BeginPlay()
+void AMovingTile::Initialize()
 {
-	Super::BeginPlay();
-
-	if (path.Num() > 1 && enabled)
+	if (path.Num() > 1)
 	{
 		if (currentPathIndex >= path.Num() - 1)
 		{
 			bool exceedEnd = NextIndex() >= path.Num() - 1;
 			bool exceedBegining = NextIndex() == 0;
-
+			
 			if ((exceedEnd || exceedBegining) && reverseRouteWhenDone)
 			{
 				pathReversed = !pathReversed;
@@ -60,6 +57,14 @@ void AMovingTile::BeginPlay()
 	}
 }
 
+// Called when the game starts or when spawned
+void AMovingTile::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	Initialize();
+}
+
 void AMovingTile::reset()
 {
 	pauseTimeCounter = 0.0f;
@@ -73,15 +78,23 @@ void AMovingTile::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
-	if (delayTimeCounter >= startDelay)
+	if (enabled)
 	{
-		UpdateMovement(DeltaTime);
-		UpdateCarryOn();
+		if (delayTimeCounter >= startDelay)
+		{
+			UpdateMovement(DeltaTime);
+			UpdateCarryOn();
+		}
+		else
+		{
+			delayTimeCounter += DeltaTime;
+		}
 	}
-	else
-	{
-		delayTimeCounter += DeltaTime;
-	}
+}
+
+void AMovingTile::SetMovmentEnabled(bool _enabled)
+{
+	enabled = _enabled;
 }
 
 void AMovingTile::UpdateMovement(float dt)
@@ -107,7 +120,7 @@ void AMovingTile::UpdateMovement(float dt)
 			SetActorLocation(newCurr);
 
 			checkDirection = nextPos - GetActorLocation();
-
+			
 			//chekc if went over destination
 			if (FVector::DotProduct(currDir, checkDirection.GetSafeNormal()) < 0.0f)
 			{

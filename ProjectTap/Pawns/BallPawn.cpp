@@ -172,7 +172,6 @@ void ABallPawn::Tick( float DeltaTime )
 		}
 	}
 
-
 	AProjectTapGameState* gameState = GetWorld()->GetGameState<AProjectTapGameState>();
 	if ( dying && gameState->GetState() == CustomGameState::GAME_STATE_DYING )
 	{
@@ -286,6 +285,8 @@ void ABallPawn::TransitionBallToProperLocationFromDeflectiveTile(const FVector& 
 
 	bDeflectiveTransition = true;
 
+	bInvincible = true;
+
 	currentTransitionSpeed = transitionSpeed;
 
 	bDisableGravityWhenTransition = disableGravityWhenTransition;
@@ -307,6 +308,7 @@ void ABallPawn::UpdateDeflectiveTransition(float dt)
 		if (distanceTransitioned > totalTransitionDistance)
 		{
 			bDeflectiveTransition = false;
+			bInvincible = false;
 			bDisableGravityWhenTransition = false;
 			ballCollision->SetEnableGravity(true);
 			distanceTransitioned = .0f;

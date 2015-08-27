@@ -52,6 +52,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Path)
 	bool reverseRouteWhenDone = true;
 
+	UFUNCTION(BlueprintCallable, Category = Level)
+		void SetMovmentEnabled(bool _enabled);
+
 #if WITH_EDITOR
 	virtual void EditorKeyPressed(FKey Key,
 				                  EInputEvent Event) override;
@@ -85,6 +88,8 @@ public:
 	virtual void Tick( float DeltaSeconds ) override;
 
 	void UpdateCarryOn();
+	
+	void Initialize();
 protected:
 	void reset();
 	void UpdateMovement( float dt );
