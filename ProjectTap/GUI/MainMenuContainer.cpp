@@ -400,11 +400,14 @@ void AMainMenuContainer::SetGraphcisScalabilityNumber(UGameUserSettings* setting
 void AMainMenuContainer::SetGraphicsLow(UGameUserSettings* settings)
 {
 	SetGraphcisScalabilityNumber(settings, 0); 
+	settings->ScalabilityQuality.ResolutionQuality = 100;
+
 }
 
 void AMainMenuContainer::SetGraphicsMid(UGameUserSettings* settings)
 {
 	SetGraphcisScalabilityNumber(settings, 1);
+	settings->ScalabilityQuality.ResolutionQuality = 100;
 
 }
 
@@ -419,4 +422,15 @@ void AMainMenuContainer::SetGraphicsUltra(UGameUserSettings* settings)
 {
 	SetGraphcisScalabilityNumber(settings, 3);
 
+}
+
+UTexture2D* AMainMenuContainer::LoadTextureByName(const FString& name)
+{
+	if (name.IsEmpty()) return nullptr;
+
+	FString path = "/Game/Textures/";
+	path += name;
+
+	auto asset = StaticLoadObject(UTexture2D::StaticClass(), nullptr, *name);
+	return Cast<UTexture2D>(asset);
 }

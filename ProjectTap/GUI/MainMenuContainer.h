@@ -116,4 +116,7 @@ private:
 
 	int32 GetIndexByResolutionString( TArray<FString>& resolutionStrings ,
 									  const FString& resolution );
+public:
+	UFUNCTION(Blueprintcallable, Category=LoadTexture)
+	static UTexture2D* LoadTextureByName(const FString& name);
 };
