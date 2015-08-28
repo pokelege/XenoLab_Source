@@ -7,7 +7,7 @@
 #include "ProjectTapGameState.h"
 #include "General/Bullet.h"
 #include "ParticleEmitterInstances.h"
-
+#include "Tiles/MovingTile.h"
 const FName ATurretPawn::BASE_MESH = FName("/Game/Models/TurretBase");
 const FName ATurretPawn::GUN_MESH = FName("/Game/Models/TurretGun");
 const float ATurretPawn::MAX_HEALTH = 10.0f;
@@ -20,7 +20,7 @@ ATurretPawn::ATurretPawn()
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> baseMeshSource(*BASE_MESH.ToString());
 
-	UBoxComponent* collisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Turret Collision"));
+	collisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Turret Collision"));
 	collisionBox->SetBoxExtent(FVector(40, 40, 120));
 	this->SetRootComponent(collisionBox);
 	collisionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -89,6 +89,10 @@ void ATurretPawn::BeginPlay()
 	nozzleSound->SetWorldLocation(nozzleLocal);
 	direction = this->GetActorForwardVector();
 	explosionParticle->Deactivate();
+	if (Cast<AMovingTile>(GetAttachParentActor()) != nullptr)
+	{
+		collisionBox->SetBoxExtent(FVector(0, 0, 0));
+	}
 }
 
 void ATurretPawn::OnPlayerChanged(ABallPawn* newPlayer)
@@ -279,8 +283,8 @@ void ATurretPawn::Kill()
 OffsetInfo ATurretPawn::getOffsetInfo()
 {
 	OffsetInfo off;
-	off.scaleForCollision = FVector(0, 0, 0);
-	off.offsetForCollision = FVector(0, 0, 0);
+	off.scaleForCollision = FVector(1, 1, 9);
+	off.offsetForCollision = FVector(0, 0, 80);
 	off.offsetForCarryOn = FVector(0, 0, 50);
 	return off;
 }

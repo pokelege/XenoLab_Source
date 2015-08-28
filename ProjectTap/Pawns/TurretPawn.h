@@ -32,6 +32,7 @@ class PROJECTTAP_API ATurretPawn : public AActor, public IGroundable, public ICa
 	UParticleSystemComponent* laserTag;
 	UParticleSystemComponent* explosionParticle;
 	UStaticMeshComponent* baseMesh;
+	UBoxComponent* collisionBox;
 public:
 
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Turret )
