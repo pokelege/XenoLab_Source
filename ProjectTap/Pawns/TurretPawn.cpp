@@ -7,7 +7,7 @@
 #include "ProjectTapGameState.h"
 #include "General/Bullet.h"
 #include "ParticleEmitterInstances.h"
-
+#include "Tiles/MovingTile.h"
 const FName ATurretPawn::BASE_MESH = FName("/Game/Models/TurretBase");
 const FName ATurretPawn::GUN_MESH = FName("/Game/Models/TurretGun");
 const float ATurretPawn::MAX_HEALTH = 10.0f;
@@ -20,7 +20,7 @@ ATurretPawn::ATurretPawn()
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> baseMeshSource(*BASE_MESH.ToString());
 
-	UBoxComponent* collisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Turret Collision"));
+	collisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Turret Collision"));
 	collisionBox->SetBoxExtent(FVector(40, 40, 120));
 	this->SetRootComponent(collisionBox);
 	collisionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -89,6 +89,10 @@ void ATurretPawn::BeginPlay()
 	nozzleSound->SetWorldLocation(nozzleLocal);
 	direction = this->GetActorForwardVector();
 	explosionParticle->Deactivate();
+	if (Cast<AMovingTile>(GetAttachParentActor()) != nullptr)
+	{
+		collisionBox->SetBoxExtent(FVector(0, 0, 0));
+	}
 }
 
 void ATurretPawn::OnPlayerChanged(ABallPawn* newPlayer)
@@ -98,13 +102,11 @@ void ATurretPawn::OnPlayerChanged(ABallPawn* newPlayer)
 
 bool ATurretPawn::FoundPlayerToHit()
 {
-	FVector forward;
-
-	forward = TurretGunMesh->GetForwardVector();
+	FVector forward = TurretGunMesh->GetForwardVector();
 
 	if (target == nullptr) return false;
-	FVector turretToBallNormal = (target->GetTransform().GetTranslation() - nozzleLocal).GetSafeNormal();
-	float distance = FVector::DistSquared(target->GetActorLocation(), nozzleLocal);
+	FVector turretToBallNormal = (target->GetActorLocation() - nozzleLocalUpdatable).GetSafeNormal();
+	float distance = FVector::DistSquared(target->GetActorLocation(), nozzleLocalUpdatable);
 
 	float dot = FVector::DotProduct(turretToBallNormal, forward);
 	float radians = FMath::Cos(FMath::DegreesToRadians(FOV));
@@ -116,15 +118,14 @@ bool ATurretPawn::FoundPlayerToHit()
 	FCollisionObjectQueryParams objectParam = objectParam.DefaultObjectQueryParam;
 
 	auto pos = TurretGunMesh->GetSocketLocation("Nozzle");
-	auto rayStart = pos + (target->GetActorLocation() - nozzleLocalUpdatable).GetSafeNormal();
 	auto laserVector = (target->GetActorLocation() - nozzleLocalUpdatable).GetSafeNormal() * maxDistance;
 
-	GetWorld()->LineTraceSingleByObjectType(hit, rayStart, pos + laserVector, objectParam, queryParam);
+	GetWorld()->LineTraceSingleByObjectType(hit, pos, pos + laserVector, objectParam, queryParam);
 	while (hit.GetActor() != nullptr && Cast<ABullet>(hit.GetActor()) != nullptr)
 	{
 		queryParam.AddIgnoredComponent(hit.GetComponent());
 		hit = FHitResult();
-		GetWorld()->LineTraceSingleByObjectType(hit, rayStart, pos + laserVector, objectParam, queryParam);
+		GetWorld()->LineTraceSingleByObjectType(hit, pos, pos + laserVector, objectParam, queryParam);
 	}
 	return Cast<ABallPawn>(hit.GetActor()) != nullptr && !Cast<ABallPawn>(hit.GetActor())->isDying() && !Cast<ABallPawn>(hit.GetActor())->bInvincible;
 }
@@ -142,9 +143,11 @@ void ATurretPawn::Fire()
 
 bool ATurretPawn::CanRotateToPlayer()
 {
-	auto targetVector = (target->GetActorLocation() - TurretGunMesh->GetComponentLocation()).GetSafeNormal();
-	auto targetRotation = targetVector.Rotation();
-	return targetRotation.GetNormalized().Yaw <= GetActorRotation().GetNormalized().Yaw + rotation && targetRotation.GetNormalized().Yaw >= GetActorRotation().GetNormalized().Yaw - rotation;
+	FVector forward = GetActorForwardVector().GetSafeNormal2D();
+	FVector turretToBallNormal = (target->GetActorLocation() - nozzleLocalUpdatable).GetSafeNormal2D();
+	float dot = FVector::DotProduct(turretToBallNormal, forward);
+	float radians = FMath::Cos(FMath::DegreesToRadians(rotation * 0.5f));
+	return dot >= radians;
 }
 
 bool ATurretPawn::RotateToPlayer(const float& DeltaTime)
@@ -280,8 +283,8 @@ void ATurretPawn::Kill()
 OffsetInfo ATurretPawn::getOffsetInfo()
 {
 	OffsetInfo off;
-	off.scaleForCollision = FVector(0, 0, 0);
-	off.offsetForCollision = FVector(0, 0, 0);
+	off.scaleForCollision = FVector(1, 1, 9);
+	off.offsetForCollision = FVector(0, 0, 80);
 	off.offsetForCarryOn = FVector(0, 0, 50);
 	return off;
 }

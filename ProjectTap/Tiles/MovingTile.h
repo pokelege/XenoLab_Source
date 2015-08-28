@@ -11,6 +11,7 @@ class PROJECTTAP_API AMovingTile : public ATile
 {
 	GENERATED_BODY()
 
+		TArray<class AJumpTile*> JumpTiles;
 public:
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Path )
 		TArray<FVector> path;
