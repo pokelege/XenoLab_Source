@@ -55,6 +55,13 @@ void AMovingTile::Initialize()
 		carryOn->AttachRootComponentToActor(this);
 		UpdateCarryOn();
 	}
+	for (TActorIterator<AJumpTile> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		if (ActorItr->IsAttachedTo(this))
+		{
+			JumpTiles.Add(*ActorItr);
+		}
+	}
 }
 
 // Called when the game starts or when spawned
@@ -148,6 +155,14 @@ int32 AMovingTile::IncrementIndex()
 {
 	auto jumpTile = Cast<AJumpTile>(carryOn);
 	auto isJumptileWaitingForBall = jumpTile != nullptr && jumpTile->IsWaitingForBall();
+	if (!isJumptileWaitingForBall)
+	{
+		for (size_t i = 0; i < JumpTiles.Num() && !isJumptileWaitingForBall; ++i)
+		{
+			jumpTile = Cast<AJumpTile>(JumpTiles[i]);
+			isJumptileWaitingForBall = jumpTile != nullptr && jumpTile->IsWaitingForBall();
+		}
+	}
 
 	if (!isJumptileWaitingForBall)
 	{
