@@ -80,8 +80,12 @@ void ABlockingTileBase::deactivate()
 	Super::deactivate();
 	time_counter = 0.0f;
 	lerpMaterialColorForCoolDown(1.0f);
-	SoundPlayer->SetSound( DeactivateSound );
-	SoundPlayer->Play();
+
+	if (enabled)
+	{
+		SoundPlayer->SetSound(DeactivateSound);
+		SoundPlayer->Play();
+	}
 }
 void ABlockingTileBase::activate()
 {

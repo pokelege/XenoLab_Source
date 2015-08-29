@@ -66,8 +66,8 @@ void APawnCastingTrigger::OnBeginTriggerOverlap(AActor* OtherActor,
 		auto tile = Cast<ABlockingTileBase>(OtherActor);
 		if (tile != nullptr && !tile->isActivated())
 		{
-			tile->deactivate();
 			tile->Disable();
+			tile->deactivate();
 			tile->turnOffHighlight();
 		}
 	}
