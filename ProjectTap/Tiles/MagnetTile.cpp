@@ -264,7 +264,9 @@ void AMagnetTile::SpawnSubMagnet( const FVector& start ,
 	auto rotation = FRotationMatrix::MakeFromX( dir );
 	//offset
 	auto newPos = start + dir * 20.0f;
-	subMagnet = GetWorld()->SpawnActor<AMagnetTile>( newPos , rotation.Rotator() );
+	auto subMagnetTest = GetWorld()->SpawnActor<AMagnetTile>(newPos, rotation.Rotator());
+	if(subMagnetTest == nullptr) return;
+	subMagnet = subMagnetTest;
 	subMagnet->SetDepth( currentDepth + 1 );
 	subMagnet->attractionSpeed = attractionSpeed;
 	subMagnet->verticalForceMultiplier = verticalForceMultiplier;
