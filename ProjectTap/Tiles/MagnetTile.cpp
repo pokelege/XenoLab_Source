@@ -109,6 +109,11 @@ void AMagnetTile::Tick( float DeltaTime )
 			magnetParticle->EmitterInstances[0]->SetBeamTargetPoint( magnetEndPos , 0 );
 		}
 
+		if (hitActor == nullptr)
+		{
+			KillSubMagnet();
+		}
+
 		lockFrameTimer = .0f;
 	}
 
