@@ -8,7 +8,7 @@ public class ProjectTapEditorTarget : TargetRules
 	public ProjectTapEditorTarget(TargetInfo Target)
 	{
 		Type = TargetType.Editor;
-	}
+    }
 
 	//
 	// TargetRules interface.

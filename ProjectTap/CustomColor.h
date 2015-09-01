@@ -1,9 +1,9 @@
 
 #pragma once
-#include "ObjectBase.h"
+#include "ProjectTap.h"
 #include "Math/Vector.h"
 
-UENUM( CustomColor )
+UENUM()
 enum class CustomColor : uint8
 {
 	None = 0,

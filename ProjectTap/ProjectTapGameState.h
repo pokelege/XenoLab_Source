@@ -16,19 +16,19 @@ class PROJECTTAP_API AProjectTapGameState : public AGameState
 
 public:
 	DECLARE_MULTICAST_DELEGATE_OneParam( FPlayerChanged , const ABallPawn* )
-	UPROPERTY( BlueprintAssignable , Category = "Player" )
+	//UPROPERTY( BlueprintAssignable , Category = "Player" )
 		FPlayerChanged PlayerChanged;
 
 	DECLARE_MULTICAST_DELEGATE_OneParam( FGameModeChanged , const CustomGameMode )
-	UPROPERTY( BlueprintAssignable , Category = "GameMode" )
+	//UPROPERTY( BlueprintAssignable , Category = "GameMode" )
 		FGameModeChanged GameModeChanged;
 
 	DECLARE_MULTICAST_DELEGATE_OneParam( FGameStateChanged , const CustomGameState )
-	UPROPERTY( BlueprintAssignable , Category = "GameState" )
+	//UPROPERTY( BlueprintAssignable , Category = "GameState" )
 		FGameStateChanged GameStateChanged;
 
 	DECLARE_MULTICAST_DELEGATE_OneParam( FCameraChanged , UProjectTapCameraComponent* )
-	UPROPERTY( BlueprintAssignable , Category = "Camera" )
+	//UPROPERTY( BlueprintAssignable , Category = "Camera" )
 		FCameraChanged CameraChanged;
 
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Level )

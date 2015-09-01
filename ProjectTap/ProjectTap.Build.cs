@@ -11,12 +11,14 @@ public class ProjectTap : ModuleRules
                                                             "Engine", 
                                                             "InputCore",
                                                             "AIModule", 
-                                                            "UMG",
-                                                            "MovieSceneCore"
+                                                            "UMG"
 															});
 
         PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		if (Target.Type == TargetRules.TargetType.Editor)
+		{
 			PublicDependencyModuleNames.Add("UnrealEd");
+			bFasterWithoutUnity = true;
+        }
     }
 }

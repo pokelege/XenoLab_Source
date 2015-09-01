@@ -1,6 +1,6 @@
 #pragma once
 #include "ObjectBase.h"
-UENUM( CustomGameState )
+UENUM()
 enum class CustomGameState : uint8
 {
 	GAME_STATE_UNKNOWN = 0 ,
