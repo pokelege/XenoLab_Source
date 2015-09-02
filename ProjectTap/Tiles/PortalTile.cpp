@@ -313,7 +313,9 @@ void APortalTile::GetLaserPortalTransportedLocation( UPrimitiveComponent* hit4Pp
 				otherPortal->orangePortalTrigger->GetComponentLocation() :
 				otherPortal->bluePortalTrigger->GetComponentLocation();
 
-			newDir = isOrangePortal ? otherPortal->GetActorRotation().Vector() : -otherPortal->GetActorRotation().Vector();
+			auto orangeDir = otherPortal->GetActorRotation().Vector();
+			auto blueDir = -orangeDir;
+			newDir = isOrangePortal ? orangeDir : blueDir;
 			newPos = newLaserPos + newDir * 10.0f;
 		}
 	}

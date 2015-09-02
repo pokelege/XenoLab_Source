@@ -105,7 +105,9 @@ void AMagnetTile::Tick( float DeltaTime )
 		if ( emitter != nullptr )
 		{
 			//update magnet particle 	
-			magnetEndPos = hit.bBlockingHit ? hit.ImpactPoint : GetClampedForwardVector( true ) + GetActorLocation();
+			auto pos = GetActorLocation();
+			auto forwardVec = GetClampedForwardVector(true);
+			magnetEndPos = hit.bBlockingHit ? hit.ImpactPoint : forwardVec + pos;
 			magnetParticle->EmitterInstances[0]->SetBeamTargetPoint( magnetEndPos , 0 );
 		}
 
@@ -154,6 +156,7 @@ void AMagnetTile::UpdatePortalSearch( AActor* actor , const FHitResult& hit )
 		else if (subMagnet != nullptr)
 		{
 			subMagnet->SetActorLocation(subMagnetTilePos);
+			subMagnet->SetActorRotation(subMagnetTileDir.Rotation());
 		}
 	}
 }
