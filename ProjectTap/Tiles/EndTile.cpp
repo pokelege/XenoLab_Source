@@ -123,8 +123,8 @@ void AEndTile::Tick(float DeltaTime)
 	}
 	static float letime = 0;
 	letime += DeltaTime;
-	FVector location = FRotator(0, letime * 500, 0).Quaternion() * FVector(35, 0, 0);
-	FVector location2 = FRotator(0, -letime * 500, 0).Quaternion() * FVector(35, 0, 0);
+	FVector location = FRotator(0, -letime * 500, 0).Quaternion() * FVector(35, 0, 0);
+	FVector location2 = FRotator(0, -letime * 500, 0).Quaternion() * FVector(-15, 0, 0);
 	particleComponent->SetVectorParameter
 		(
 			TEXT("Location"),
