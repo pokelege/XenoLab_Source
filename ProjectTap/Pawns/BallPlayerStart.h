@@ -32,10 +32,8 @@ public:
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = GameMode )
 		CustomGameMode GameMode = CustomGameMode::GAME_MODE_LEVEL;
 
-#if WITH_EDITOR
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Ball)
 		bool godMode = false;
-#endif
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Camera )
 		bool followPlayer = false;
 
