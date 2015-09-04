@@ -106,9 +106,9 @@ void AProjectTapGameMode::StartPlay()
 		{
 			GConfig->GetFloat(TEXT("Music"), *musicPlayer->Sound->GetName(), musicTime, GGameIni);
 		}
-		while (musicTime >= musicPlayer->Sound->GetDuration())
+		while (musicTime >= musicPlayer->Sound->Duration)
 		{
-			musicTime -= musicPlayer->Sound->GetDuration();
+			musicTime -= musicPlayer->Sound->Duration;
 		}
 		musicPlayer->Play(musicTime);
 		lastTime = UGameplayStatics::GetRealTimeSeconds(this);
@@ -169,12 +169,6 @@ void AProjectTapGameMode::EndPlay(EEndPlayReason::Type reason)
 
 void AProjectTapGameMode::Respawn()
 {
-	GetWorld()->GetFirstPlayerController()->ClientTravel(TEXT("?restart"), TRAVEL_MAX);
-}
-
-bool AProjectTapGameMode::LoadNextLevel()
-{
-	if (loadingLevel) return false;
 	if (musicPlayer->Sound != nullptr)
 	{
 		float timeToSave = musicTime + (UGameplayStatics::GetRealTimeSeconds(this) - lastTime);
@@ -183,6 +177,12 @@ bool AProjectTapGameMode::LoadNextLevel()
 			GConfig->SetFloat(TEXT("Music"), *musicPlayer->Sound->GetName(), timeToSave, GGameIni);
 		}
 	}
+	GetWorld()->GetFirstPlayerController()->ClientTravel(TEXT("?restart"), TRAVEL_MAX);
+}
+
+bool AProjectTapGameMode::LoadNextLevel()
+{
+	if (loadingLevel) return false;
 
 	ACheckpoint::ClearSave();
 
