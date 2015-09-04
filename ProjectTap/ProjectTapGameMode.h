@@ -26,6 +26,8 @@ public:
 	UPROPERTY( EditAnywhere , BlueprintReadWrite , Category = Audio )
 	class UAudioComponent* musicPlayer = nullptr;
 private:
+	float musicTime = 0;
+	float lastTime = 0;
 	CustomGameState lastReportedState = CustomGameState::GAME_STATE_UNKNOWN;
 	bool isMenu = false;
 	bool loadingLevel = false;

@@ -14,7 +14,7 @@
 #include "General/Checkpoint.h"
 #include "ConstrainingSpringArmComponent.h"
 
-AProjectTapGameMode::AProjectTapGameMode( const FObjectInitializer& initializer ): Super( initializer )
+AProjectTapGameMode::AProjectTapGameMode(const FObjectInitializer& initializer) : Super(initializer)
 {
 	//UE_LOG( LogTemp , Warning , TEXT( "mouse" ) );
 	PlayerControllerClass = AMouseController::StaticClass();
@@ -22,19 +22,19 @@ AProjectTapGameMode::AProjectTapGameMode( const FObjectInitializer& initializer 
 	GameStateClass = AProjectTapGameState::StaticClass();
 	PrimaryActorTick.bCanEverTick = false;
 
-	ConstructorHelpers::FObjectFinder<USoundWave> defaultMusicFile( TEXT( "/Game/Sound/S_DefaultMusic" ) );
-	musicPlayer = CreateDefaultSubobject<UAudioComponent>( TEXT( "Music" ) );
-	musicPlayer->SetSound( defaultMusicFile.Object );
+	ConstructorHelpers::FObjectFinder<USoundWave> defaultMusicFile(TEXT("/Game/Sound/S_DefaultMusic"));
+	musicPlayer = CreateDefaultSubobject<UAudioComponent>(TEXT("Music"));
+	musicPlayer->SetSound(defaultMusicFile.Object);
 	musicPlayer->bAutoActivate = false;
-	musicPlayer->AttachTo( GetRootComponent() );
+	musicPlayer->AttachTo(GetRootComponent());
 }
 
 void AProjectTapGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	auto gameState = GetGameState<AProjectTapGameState>();
-	OnCameraChangedDelegateHandle = gameState->CameraChanged.AddUFunction( this , TEXT( "OnCameraChanged" ) );
-	OnGameStateChangedDelegateHandle = gameState->GameStateChanged.AddUFunction( this , TEXT( "OnStateChanged" ) );
+	OnCameraChangedDelegateHandle = gameState->CameraChanged.AddUFunction(this, TEXT("OnCameraChanged"));
+	OnGameStateChangedDelegateHandle = gameState->GameStateChanged.AddUFunction(this, TEXT("OnStateChanged"));
 	auto physicsWorld = GetWorld()->GetPhysicsScene();
 	auto scene = physicsWorld->GetPhysXScene(0);
 }
@@ -44,7 +44,7 @@ void AProjectTapGameMode::StartPlay()
 	Super::StartPlay();
 	auto gameState = GetGameState<AProjectTapGameState>();
 	ABallPawn* ball = nullptr;
-	if ( UWorld* world = GetWorld() )
+	if (UWorld* world = GetWorld())
 	{
 		AActor* playerStart = FindPlayerStart(0, FString("Player"));
 		FTransform playerTransform = playerStart->GetTransform();
@@ -57,37 +57,40 @@ void AProjectTapGameMode::StartPlay()
 			spawnPosition = FVector(saveData->Position.X, saveData->Position.Y, saveData->Position.Z + 52.0f);
 		else
 			spawnPosition = playerTransform.GetTranslation();
-			
-		if ( ABallPlayerStart* realPlayerStart = Cast<ABallPlayerStart>( playerStart ) )
+
+		if (ABallPlayerStart* realPlayerStart = Cast<ABallPlayerStart>(playerStart))
 		{
-			auto possibleCamera = realPlayerStart->camera == nullptr ? nullptr : Cast<UProjectTapCameraComponent>( realPlayerStart->camera->GetComponentByClass( UProjectTapCameraComponent::StaticClass() ) );
+			auto possibleCamera = realPlayerStart->camera == nullptr ? nullptr : Cast<UProjectTapCameraComponent>(realPlayerStart->camera->GetComponentByClass(UProjectTapCameraComponent::StaticClass()));
 			FActorSpawnParameters params;
 			ball = world->SpawnActor<ABallPawn>(
-				ABallPawn::StaticClass() ,
-				spawnPosition ,
-				FRotator( playerTransform.GetRotation() ) ,
-				params );
+				ABallPawn::StaticClass(),
+				spawnPosition,
+				FRotator(playerTransform.GetRotation()),
+				params);
 
 			isGodMode = realPlayerStart->godMode;
 
-			if ( ball != nullptr )
+			if (ball != nullptr)
 			{
 				if (saveData && saveData->Enabled)
 					ball->AddVelocity(saveData->Direction * saveData->InitialSpeed);
 				else
 					ball->AddVelocity(realPlayerStart->initialVelocity, spawnPosition);
 
-				if ( possibleCamera != nullptr && realPlayerStart->followPlayer )
+				if (possibleCamera != nullptr && realPlayerStart->followPlayer)
 				{
 					FVector saveOffset = (saveData && saveData->Enabled) ? (spawnPosition - realPlayerStart->GetActorLocation()) : FVector::ZeroVector;
 					ball->spring->SetLockPosition(spawnPosition);
-					ball->setCamera( realPlayerStart, &saveOffset );
+					ball->setCamera(realPlayerStart, &saveOffset);
 					possibleCamera = ball->GetCamera();
 				}
 			}
-			gameState->SetCamera( possibleCamera );
+			gameState->SetCamera(possibleCamera);
 			isMenu = realPlayerStart->GameMode == CustomGameMode::GAME_MODE_MAIN_MENU;
-			if ( realPlayerStart->music != nullptr )musicPlayer->SetSound( realPlayerStart->music );
+			if (realPlayerStart->music != nullptr)
+			{
+				musicPlayer->SetSound(realPlayerStart->music);
+			}
 		}
 		else
 		{
@@ -97,11 +100,23 @@ void AProjectTapGameMode::StartPlay()
 
 		gameState->SetPlayer(ball);
 	}
-	musicPlayer->Play();
-	musicPlayer->SetVolumeMultiplier( 0 );
+	if (musicPlayer->Sound != nullptr)
+	{
+		if (GConfig != nullptr)
+		{
+			GConfig->GetFloat(TEXT("Music"), *musicPlayer->Sound->GetName(), musicTime, GGameIni);
+		}
+		while (musicTime >= musicPlayer->Sound->GetDuration())
+		{
+			musicTime -= musicPlayer->Sound->GetDuration();
+		}
+		musicPlayer->Play(musicTime);
+		lastTime = UGameplayStatics::GetRealTimeSeconds(this);
+	}
+	musicPlayer->SetVolumeMultiplier(0);
 
-	gameState->SetGameState( CustomGameState::GAME_STATE_PLAYING );
-	if ( isMenu ) gameState->SetGameMode( CustomGameMode::GAME_MODE_MAIN_MENU );
+	gameState->SetGameState(CustomGameState::GAME_STATE_PLAYING);
+	if (isMenu) gameState->SetGameMode(CustomGameMode::GAME_MODE_MAIN_MENU);
 }
 
 UCheckpointSave* AProjectTapGameMode::GetCheckpointData(UWorld* world)
@@ -130,11 +145,11 @@ bool AProjectTapGameMode::IsGodMode()
 void AProjectTapGameMode::BeginDestroy()
 {
 	auto gameState = GetGameState<AProjectTapGameState>();
-	if ( gameState )
+	if (gameState)
 	{
-		gameState->GameStateChanged.Remove( OnGameStateChangedDelegateHandle );
+		gameState->GameStateChanged.Remove(OnGameStateChangedDelegateHandle);
 		OnGameStateChangedDelegateHandle.Reset();
-		gameState->CameraChanged.Remove( OnGameStateChangedDelegateHandle );
+		gameState->CameraChanged.Remove(OnGameStateChangedDelegateHandle);
 		OnCameraChangedDelegateHandle.Reset();
 	}
 	Super::BeginDestroy();
@@ -154,12 +169,20 @@ void AProjectTapGameMode::EndPlay(EEndPlayReason::Type reason)
 
 void AProjectTapGameMode::Respawn()
 {
-	GetWorld()->GetFirstPlayerController()->ClientTravel( TEXT("?restart"), TRAVEL_MAX );
+	GetWorld()->GetFirstPlayerController()->ClientTravel(TEXT("?restart"), TRAVEL_MAX);
 }
 
 bool AProjectTapGameMode::LoadNextLevel()
 {
-	if(loadingLevel) return false;
+	if (loadingLevel) return false;
+	if (musicPlayer->Sound != nullptr)
+	{
+		float timeToSave = musicTime + (UGameplayStatics::GetRealTimeSeconds(this) - lastTime);
+		if (GConfig != nullptr)
+		{
+			GConfig->SetFloat(TEXT("Music"), *musicPlayer->Sound->GetName(), timeToSave, GGameIni);
+		}
+	}
 
 	ACheckpoint::ClearSave();
 
@@ -197,60 +220,60 @@ bool AProjectTapGameMode::LoadNextLevel()
 	}
 
 	// load next level
-	UGameplayStatics::OpenLevel( GetWorld() , GetGameState<AProjectTapGameState>()->currentLevelToLoadWhenWin );
+	UGameplayStatics::OpenLevel(GetWorld(), GetGameState<AProjectTapGameState>()->currentLevelToLoadWhenWin);
 	return loadingLevel = true;
 }
 
-void AProjectTapGameMode::OnStateChanged(const CustomGameState newState )
+void AProjectTapGameMode::OnStateChanged(const CustomGameState newState)
 {
-	if(lastReportedState == newState) return;
+	if (lastReportedState == newState) return;
 	lastReportedState = newState;
-	if(camera != nullptr)
+	if (camera != nullptr)
 	{
-		switch(lastReportedState)
+		switch (lastReportedState)
 		{
-			case CustomGameState::GAME_STATE_PLAYING:
-				camera->FadeIn();
-				break;
-			case CustomGameState::GAME_STATE_GAME_OVER:
-			case CustomGameState::GAME_STATE_WIN:
-				camera->FadeOut();
+		case CustomGameState::GAME_STATE_PLAYING:
+			camera->FadeIn();
+			break;
+		case CustomGameState::GAME_STATE_GAME_OVER:
+		case CustomGameState::GAME_STATE_WIN:
+			camera->FadeOut();
 		}
 	}
 }
 
 void AProjectTapGameMode::OnCameraFaded()
 {
-	switch(lastReportedState)
+	switch (lastReportedState)
 	{
-		case CustomGameState::GAME_STATE_GAME_OVER:
-			Respawn();
-			break;
-		case CustomGameState::GAME_STATE_WIN:
-			LoadNextLevel();
+	case CustomGameState::GAME_STATE_GAME_OVER:
+		Respawn();
+		break;
+	case CustomGameState::GAME_STATE_WIN:
+		LoadNextLevel();
 	}
 }
 
 void AProjectTapGameMode::OnCameraChanged(UProjectTapCameraComponent* newCamera)
 {
-	if(camera != nullptr)
+	if (camera != nullptr)
 	{
-		camera->OnFadeIn.Remove( OnCameraFadeInDelegateHandle );
+		camera->OnFadeIn.Remove(OnCameraFadeInDelegateHandle);
 		OnCameraFadeInDelegateHandle.Reset();
-		camera->OnFadeOut.Remove( OnCameraFadeOutDelegateHandle );
+		camera->OnFadeOut.Remove(OnCameraFadeOutDelegateHandle);
 		OnCameraFadeOutDelegateHandle.Reset();
-		camera->OnFadeUpdate.Remove( OnCameraFadeUpdateDelegateHandle );
+		camera->OnFadeUpdate.Remove(OnCameraFadeUpdateDelegateHandle);
 		OnCameraFadeUpdateDelegateHandle.Reset();
 	}
 	camera = newCamera;
-	if(camera != nullptr)
+	if (camera != nullptr)
 	{
-		OnCameraFadeInDelegateHandle = camera->OnFadeIn.AddUFunction( this , TEXT( "OnCameraFaded" ) );
-		OnCameraFadeOutDelegateHandle = camera->OnFadeOut.AddUFunction( this , TEXT( "OnCameraFaded" ) );
-		OnCameraFadeUpdateDelegateHandle = camera->OnFadeUpdate.AddUFunction( this , TEXT( "OnCameraFadeUpdate" ) );
+		OnCameraFadeInDelegateHandle = camera->OnFadeIn.AddUFunction(this, TEXT("OnCameraFaded"));
+		OnCameraFadeOutDelegateHandle = camera->OnFadeOut.AddUFunction(this, TEXT("OnCameraFaded"));
+		OnCameraFadeUpdateDelegateHandle = camera->OnFadeUpdate.AddUFunction(this, TEXT("OnCameraFadeUpdate"));
 	}
 }
 void AProjectTapGameMode::OnCameraFadeUpdate(const float percent)
 {
-	if(musicPlayer != nullptr) musicPlayer->SetVolumeMultiplier( percent );
+	if (musicPlayer != nullptr) musicPlayer->SetVolumeMultiplier(percent);
 }
