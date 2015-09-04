@@ -183,7 +183,14 @@ void AProjectTapGameMode::Respawn()
 bool AProjectTapGameMode::LoadNextLevel()
 {
 	if (loadingLevel) return false;
-
+	if (musicPlayer->Sound != nullptr)
+	{
+		float timeToSave = musicTime + (UGameplayStatics::GetRealTimeSeconds(this) - lastTime);
+		if (GConfig != nullptr)
+		{
+			GConfig->SetFloat(TEXT("Music"), *musicPlayer->Sound->GetName(), timeToSave, GGameIni);
+		}
+	}
 	ACheckpoint::ClearSave();
 
 	// load in previous data
