@@ -156,7 +156,7 @@ int32 AMovingTile::IncrementIndex()
 	auto isJumptileWaitingForBall = jumpTile != nullptr && jumpTile->IsWaitingForBall();
 	if (!isJumptileWaitingForBall)
 	{
-		for (size_t i = 0; i < JumpTiles.Num() && !isJumptileWaitingForBall; ++i)
+		for (int32 i = 0; i < JumpTiles.Num() && !isJumptileWaitingForBall; ++i)
 		{
 			jumpTile = Cast<AJumpTile>(JumpTiles[i]);
 			isJumptileWaitingForBall = jumpTile != nullptr && jumpTile->IsWaitingForBall();
